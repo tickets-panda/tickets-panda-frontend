@@ -109,7 +109,7 @@ export default function LoginPage() {
             <div className="grid gap-2">
               <button
                 type="button"
-                onClick={() => fillCredentials('admin@nehru-college.edu', 'Admin@123456')}
+                onClick={() => fillCredentials('admin@nehru-college.edu', 'Password123')}
                 className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-left text-xs hover:bg-brand-50/50 hover:border-brand-200 transition-all"
               >
                 <div>
@@ -124,7 +124,7 @@ export default function LoginPage() {
 
               <button
                 type="button"
-                onClick={() => fillCredentials('admin@ticketspanda.tech', 'Admin@123456')}
+                onClick={() => fillCredentials('admin@ticketpanda.io', 'Password123')}
                 className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 text-left text-xs hover:bg-purple-50/50 hover:border-purple-200 transition-all"
               >
                 <div>
@@ -132,7 +132,7 @@ export default function LoginPage() {
                     <ShieldCheck className="h-3.5 w-3.5 text-purple-600" />
                     <span>Platform Super Admin</span>
                   </p>
-                  <p className="text-[11px] text-slate-500 font-mono">admin@ticketspanda.tech</p>
+                  <p className="text-[11px] text-slate-500 font-mono">admin@ticketpanda.io</p>
                 </div>
                 <span className="text-[10px] font-bold text-purple-600">Auto-Fill</span>
               </button>
