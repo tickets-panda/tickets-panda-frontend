@@ -38,6 +38,7 @@ import {
 import Button from '../shared/components/Button.jsx';
 import TicketCard from '../shared/components/TicketCard.jsx';
 import Badge from '../shared/components/Badge.jsx';
+import Reveal from '../shared/components/Reveal.jsx';
 
 const STATS = [
   { value: '< 3 sec', label: 'average QR gate check-in' },
@@ -155,7 +156,7 @@ export default function LandingPage() {
       {/* ========================================================================= */}
       {/* 1. HERO SECTION */}
       {/* ========================================================================= */}
-      <section className="relative border-b border-zinc-200/80 bg-gradient-to-b from-white via-zinc-50/50 to-white pt-12 pb-20 lg:pt-20 lg:pb-28">
+      <Reveal as="section" className="relative border-b border-zinc-200/80 bg-gradient-to-b from-white via-zinc-50/50 to-white pt-12 pb-20 lg:pt-20 lg:pb-28">
         {/* Subtle grid backdrop */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-70 pointer-events-none" />
 
@@ -336,12 +337,12 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* ========================================================================= */}
       {/* 2. THE PROBLEM VS TICKET PANDA SOLUTION */}
       {/* ========================================================================= */}
-      <section className="py-20 bg-white border-b border-zinc-200/80">
+      <Reveal as="section" className="py-20 bg-white border-b border-zinc-200/80">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mx-auto max-w-3xl text-center space-y-3">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-600">
@@ -421,12 +422,12 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* ========================================================================= */}
       {/* 3. 5-STEP HOW IT WORKS */}
       {/* ========================================================================= */}
-      <section className="py-20 bg-zinc-50 border-b border-zinc-200/80">
+      <Reveal as="section" className="py-20 bg-zinc-50 border-b border-zinc-200/80">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mx-auto max-w-2xl text-center space-y-3">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-600">
@@ -469,12 +470,12 @@ export default function LandingPage() {
             })}
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* ========================================================================= */}
       {/* 4. REAL PRODUCT EXAMPLES FOR COLLEGES & ORGANIZERS */}
       {/* ========================================================================= */}
-      <section className="py-20 bg-white border-b border-zinc-200/80">
+      <Reveal as="section" className="py-20 bg-white border-b border-zinc-200/80">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
@@ -544,12 +545,12 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* ========================================================================= */}
       {/* 5. QR GATE VERIFICATION SHOWCASE */}
       {/* ========================================================================= */}
-      <section className="py-20 bg-zinc-950 text-white relative overflow-hidden">
+      <Reveal as="section" className="py-20 bg-zinc-950 text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 -mt-12 -mr-12 h-96 w-96 rounded-full bg-brand-500/10 blur-3xl pointer-events-none" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
@@ -636,12 +637,12 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* ========================================================================= */}
       {/* 6. FAQ ACCORDION */}
       {/* ========================================================================= */}
-      <section className="py-20 bg-white border-b border-zinc-200/80">
+      <Reveal as="section" className="py-20 bg-white border-b border-zinc-200/80">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <div className="text-center space-y-3 mb-12">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-600">
@@ -685,12 +686,12 @@ export default function LandingPage() {
             })}
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {/* ========================================================================= */}
       {/* 7. FINAL CALL TO ACTION BANNER */}
       {/* ========================================================================= */}
-      <section className="py-20 bg-gradient-to-tr from-brand-600 via-orange-600 to-amber-600 text-white relative overflow-hidden">
+      <Reveal as="section" className="py-20 bg-gradient-to-tr from-brand-600 via-orange-600 to-amber-600 text-white relative overflow-hidden">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 text-center space-y-6 relative z-10">
           <span className="text-4xl">🐼</span>
           <h2 className="text-3xl sm:text-5xl font-black tracking-tight font-display text-white">
@@ -716,7 +717,7 @@ export default function LandingPage() {
             </Link>
           </div>
         </div>
-      </section>
+      </Reveal>
     </div>
   );
 }

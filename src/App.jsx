@@ -3,6 +3,7 @@ import { Link, Navigate, Route, Routes } from 'react-router-dom';
 import api from './shared/api/client.js';
 import { useAuthStore } from './shared/store/auth.js';
 import RequireAuth from './shared/components/RequireAuth.jsx';
+import SmoothScroll from './shared/components/SmoothScroll.jsx';
 
 // Public (customer) app
 import PublicLayout from './public/PublicLayout.jsx';
@@ -103,6 +104,7 @@ export default function App() {
   }, []);
 
   return (
+    <SmoothScroll>
     <Routes>
       {/* Customer-facing & Marketing */}
       <Route element={<PublicLayout />}>
@@ -174,5 +176,6 @@ export default function App() {
 
       <Route path="*" element={<NotFound />} />
     </Routes>
+    </SmoothScroll>
   );
 }
