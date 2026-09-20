@@ -17,6 +17,7 @@ import api, { apiErrorMessage } from '../shared/api/client.js';
 import { PageLoader, EmptyState } from '../shared/components/Feedback.jsx';
 import Badge from '../shared/components/Badge.jsx';
 import { formatCurrency, formatDate, formatTime } from '../shared/utils/format.js';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 
 export default function TenantEventsPage() {
   const { tenantSlug } = useParams();
@@ -142,7 +143,7 @@ export default function TenantEventsPage() {
             icon={Ticket}
           />
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <RevealGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {events.map((event) => (
               <Link
                 key={event.id}
@@ -215,7 +216,7 @@ export default function TenantEventsPage() {
                 </div>
               </Link>
             ))}
-          </div>
+          </RevealGroup>
         )}
       </div>
     </div>

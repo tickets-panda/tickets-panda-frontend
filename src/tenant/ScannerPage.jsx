@@ -179,10 +179,21 @@ export default function ScannerPage() {
   const startScanner = async () => {
     if (scanning) return;
     try {
+      // List real devices first: `facingMode: 'environment'` fails on desktops
+      // and laptops without a rear camera, so prefer a back camera but fall
+      // back to whatever camera exists.
+      const devices = await Html5Qrcode.getCameras();
+      if (!devices || devices.length === 0) {
+        toast.error('No camera found on this device — use Manual Ticket Entry below');
+        setScanning(false);
+        return;
+      }
+      const back = devices.find((d) => /back|rear|environment/i.test(d.label || ''));
+      const cameraId = (back || devices[0]).id;
       const scanner = new Html5Qrcode('tp-reader');
       scannerRef.current = scanner;
       await scanner.start(
-        { facingMode: 'environment' },
+        cameraId,
         { fps: 12, qrbox: { width: 250, height: 250 } },
         async (decodedText) => {
           await stopScanner();

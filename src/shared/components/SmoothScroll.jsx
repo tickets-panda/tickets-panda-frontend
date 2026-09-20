@@ -31,8 +31,10 @@ export default function SmoothScroll({ children }) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 
     const lenis = new Lenis({
-      duration: 1.15,
+      duration: 1.25,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      touchMultiplier: 1.6,
     });
     lenisInstance = lenis;
 

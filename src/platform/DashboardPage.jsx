@@ -9,6 +9,7 @@ import Table, { Td } from '../shared/components/Table.jsx';
 import { PageLoader } from '../shared/components/Feedback.jsx';
 import { StatusBadge } from '../shared/components/Badge.jsx';
 import { formatCurrency, formatDate } from '../shared/utils/format.js';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 
 export default function PlatformDashboard() {
   const { data, isLoading } = useQuery({
@@ -26,7 +27,7 @@ export default function PlatformDashboard() {
         description="Global cross-tenant analytics, institutional tenant governance, and system-wide sales."
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <RevealGroup className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Stat
           label="Total Gross Platform Volume"
           value={formatCurrency(data.revenue)}
@@ -55,7 +56,7 @@ export default function PlatformDashboard() {
           icon={Ticket}
           tone="orange"
         />
-      </div>
+      </RevealGroup>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Recent Tenants Card */}

@@ -17,6 +17,7 @@ import { PageLoader } from '../shared/components/Feedback.jsx';
 import Card from '../shared/components/Card.jsx';
 import { StatusBadge } from '../shared/components/Badge.jsx';
 import { formatDate, formatDateTime, formatTime } from '../shared/utils/format.js';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 
 export default function VerifyTicketPage() {
   const { token } = useParams();
@@ -60,7 +61,7 @@ export default function VerifyTicketPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/70 py-12 px-4 sm:px-6">
-      <div className="mx-auto max-w-lg">
+      <RevealGroup className="mx-auto max-w-lg">
         {/* Verification Status Badge */}
         <div
           className={`rounded-3xl p-6 text-center shadow-lg border ${
@@ -159,7 +160,7 @@ export default function VerifyTicketPage() {
             <p className="mt-0.5">Scanned for security validation at physical checkpoint.</p>
           </div>
         </div>
-      </div>
+      </RevealGroup>
     </div>
   );
 }

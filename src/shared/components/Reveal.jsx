@@ -54,3 +54,19 @@ export default function Reveal({
     </Tag>
   );
 }
+
+/**
+ * Stagger cascade wrapper. Direct children fade/slide in one after another
+ * with zero per-child wiring. Ideal for card grids:
+ *
+ *   <RevealGroup className="grid gap-6 sm:grid-cols-3">
+ *     {items.map(...)}
+ *   </RevealGroup>
+ */
+export function RevealGroup({ children, className = '', ...rest }) {
+  return (
+    <Reveal className={`reveal-group${className ? ` ${className}` : ''}`} {...rest}>
+      {children}
+    </Reveal>
+  );
+}

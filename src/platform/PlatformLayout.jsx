@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   Building2,
@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import api from '../shared/api/client.js';
 import { useAuthStore } from '../shared/store/auth.js';
+import Reveal from '../shared/components/Reveal.jsx';
 
 const NAV = [
   { to: '/platform/dashboard', label: 'Platform Overview', icon: LayoutDashboard },
@@ -25,6 +26,7 @@ const NAV = [
 export default function PlatformLayout() {
   const { user, clearAuth } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
 
   const logout = async () => {
@@ -138,7 +140,9 @@ export default function PlatformLayout() {
         </header>
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
-          <Outlet />
+          <Reveal key={location.pathname} y={14}>
+            <Outlet />
+          </Reveal>
         </main>
       </div>
     </div>

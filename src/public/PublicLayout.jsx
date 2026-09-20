@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import Reveal from '../shared/components/Reveal.jsx';
 import {
   Ticket,
   Calendar,
@@ -146,7 +147,9 @@ export default function PublicLayout() {
 
       {/* Main Page Body */}
       <main className="flex-1">
-        <Outlet />
+        <Reveal key={location.pathname} y={14}>
+          <Outlet />
+        </Reveal>
       </main>
 
       {/* Footer */}

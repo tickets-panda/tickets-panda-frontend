@@ -27,6 +27,7 @@ import Tabs from '../shared/components/Tabs.jsx';
 import { EmptyState, PageLoader } from '../shared/components/Feedback.jsx';
 import { StatusBadge } from '../shared/components/Badge.jsx';
 import TicketCard from '../shared/components/TicketCard.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import { formatDate, formatTime } from '../shared/utils/format.js';
 
 export default function MyTicketsPage() {
@@ -310,7 +311,7 @@ export default function MyTicketsPage() {
                 onAction={tickets.length === 0 ? () => (window.location.href = '/events') : undefined}
               />
             ) : (
-              <div className="grid gap-6 md:grid-cols-2">
+              <RevealGroup className="grid gap-6 md:grid-cols-2">
                 {filteredTickets.map((t) => (
                   <TicketCard
                     key={t.id}
@@ -326,7 +327,7 @@ export default function MyTicketsPage() {
                     }
                   />
                 ))}
-              </div>
+              </RevealGroup>
             )}
           </div>
         )}

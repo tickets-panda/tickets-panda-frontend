@@ -23,6 +23,7 @@ import { PageLoader, EmptyState } from '../shared/components/Feedback.jsx';
 import Card from '../shared/components/Card.jsx';
 import Button from '../shared/components/Button.jsx';
 import { formatCurrency, formatDate, formatTime } from '../shared/utils/format.js';
+import Reveal, { RevealGroup } from '../shared/components/Reveal.jsx';
 
 export default function LocalCheckoutPage() {
   const { orderRef } = useParams();
@@ -121,7 +122,7 @@ export default function LocalCheckoutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       {/* Dev Mode Banner */}
-      <div className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 shadow-sm">
+      <Reveal className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 shadow-sm">
         <div className="flex items-start gap-3">
           <div className="rounded-lg bg-amber-200 p-2 text-amber-800">
             <AlertTriangle className="h-6 w-6" />
@@ -141,10 +142,10 @@ export default function LocalCheckoutPage() {
             </p>
           </div>
         </div>
-      </div>
+      </Reveal>
 
       {/* Main Grid */}
-      <div className="grid gap-6 md:grid-cols-5">
+      <RevealGroup className="grid gap-6 md:grid-cols-5">
         {/* Left column: Order summary (2 cols) */}
         <div className="space-y-6 md:col-span-2">
           <Card title="Order Summary">
@@ -388,7 +389,7 @@ export default function LocalCheckoutPage() {
             </div>
           </Card>
         </div>
-      </div>
+      </RevealGroup>
     </div>
   );
 }

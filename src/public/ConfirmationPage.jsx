@@ -21,6 +21,7 @@ import Card from '../shared/components/Card.jsx';
 import Button from '../shared/components/Button.jsx';
 import { StatusBadge } from '../shared/components/Badge.jsx';
 import TicketCard from '../shared/components/TicketCard.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import { formatCurrency, formatDate, formatTime } from '../shared/utils/format.js';
 
 export default function ConfirmationPage() {
@@ -187,7 +188,7 @@ export default function ConfirmationPage() {
               </div>
 
               {tickets.length > 0 ? (
-                <div className="grid gap-6 sm:grid-cols-2">
+                <RevealGroup className="grid gap-6 sm:grid-cols-2">
                   {tickets.map((t) => (
                     <TicketCard
                       key={t.id}
@@ -200,7 +201,7 @@ export default function ConfirmationPage() {
                       showActions={true}
                     />
                   ))}
-                </div>
+                </RevealGroup>
               ) : (
                 <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
                   <Clock className="mx-auto h-10 w-10 text-amber-500 animate-spin" />

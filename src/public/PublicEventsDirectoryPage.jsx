@@ -6,6 +6,7 @@ import api, { apiErrorMessage } from '../shared/api/client.js';
 import { PageLoader, EmptyState } from '../shared/components/Feedback.jsx';
 import Badge from '../shared/components/Badge.jsx';
 import { formatCurrency, formatDate, formatTime } from '../shared/utils/format.js';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 
 export default function PublicEventsDirectoryPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -70,7 +71,7 @@ export default function PublicEventsDirectoryPage() {
             description="Try searching with a different keyword or check back soon for newly published festivals."
           />
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 pt-4">
+          <RevealGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 pt-4">
             {filteredEvents.map((event) => {
               const tenantSlug = event.tenant?.slug || 'event';
               return (
@@ -159,7 +160,7 @@ export default function PublicEventsDirectoryPage() {
                 </Link>
               );
             })}
-          </div>
+          </RevealGroup>
         )}
       </div>
     </div>

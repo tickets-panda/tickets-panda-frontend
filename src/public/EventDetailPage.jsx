@@ -25,6 +25,7 @@ import { PageLoader, EmptyState } from '../shared/components/Feedback.jsx';
 import Badge from '../shared/components/Badge.jsx';
 import Button from '../shared/components/Button.jsx';
 import ActivityCard from '../shared/components/ActivityCard.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import { formatCurrency, formatDate, formatTime } from '../shared/utils/format.js';
 import toast from 'react-hot-toast';
 
@@ -231,7 +232,7 @@ export default function EventDetailPage() {
               </div>
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2">
+            <RevealGroup className="grid gap-6 sm:grid-cols-2">
               {activities.map((act) => {
                 const actTicket = act.ticketTypes?.[0] || null;
                 return (
@@ -248,7 +249,7 @@ export default function EventDetailPage() {
                   />
                 );
               })}
-            </div>
+            </RevealGroup>
           </div>
         )}
 
@@ -268,7 +269,7 @@ export default function EventDetailPage() {
             </p>
           </div>
 
-          <div className="space-y-3.5">
+          <RevealGroup className="space-y-3.5">
             {ticketTypes.map((type) => {
               const isAvailable = type.remaining > 0;
               return (
@@ -312,7 +313,7 @@ export default function EventDetailPage() {
                 </div>
               );
             })}
-          </div>
+          </RevealGroup>
         </div>
 
         {/* ========================================================================= */}

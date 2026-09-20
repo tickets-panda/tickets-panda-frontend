@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import Button from '../shared/components/Button.jsx';
 import Card from '../shared/components/Card.jsx';
+import Reveal, { RevealGroup } from '../shared/components/Reveal.jsx';
 import Input, { Textarea } from '../shared/components/Input.jsx';
 import toast from 'react-hot-toast';
 
@@ -44,7 +45,7 @@ export function FeaturesPage() {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <RevealGroup className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {[
             {
               icon: Layers,
@@ -88,10 +89,10 @@ export function FeaturesPage() {
               </div>
             );
           })}
-        </div>
+        </RevealGroup>
 
         {/* Bottom CTA */}
-        <div className="mt-20 rounded-3xl bg-zinc-950 p-10 text-white text-center space-y-4">
+        <Reveal className="mt-20 rounded-3xl bg-zinc-950 p-10 text-white text-center space-y-4">
           <h2 className="text-2xl sm:text-3xl font-bold font-display">Ready to see it in action?</h2>
           <p className="text-sm text-zinc-400 max-w-xl mx-auto">
             Set up your organization portal and launch an event in less than 10 minutes.
@@ -103,7 +104,7 @@ export function FeaturesPage() {
               </Button>
             </Link>
           </div>
-        </div>
+        </Reveal>
       </div>
     </div>
   );
@@ -128,7 +129,7 @@ export function HowItWorksPage() {
           </p>
         </div>
 
-        <div className="mt-16 space-y-12">
+        <RevealGroup className="mt-16 space-y-12">
           {[
             {
               step: '1',
@@ -172,7 +173,7 @@ export function HowItWorksPage() {
               </div>
             </div>
           ))}
-        </div>
+        </RevealGroup>
       </div>
     </div>
   );
@@ -198,7 +199,7 @@ export function ForCollegesPage() {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-6 sm:grid-cols-3">
+        <RevealGroup className="mt-16 grid gap-6 sm:grid-cols-3">
           <div className="card p-8 space-y-3">
             <h3 className="text-lg font-bold text-zinc-900">Per-Activity Registration</h3>
             <p className="text-xs sm:text-sm text-zinc-500">
@@ -217,9 +218,9 @@ export function ForCollegesPage() {
               Invite student council volunteers as Check-in Staff. They can scan attendees right from their phones without accessing financial records.
             </p>
           </div>
-        </div>
+        </RevealGroup>
 
-        <div className="mt-14 rounded-3xl border border-brand-200 bg-brand-50/50 p-8 text-center space-y-4">
+        <Reveal className="mt-14 rounded-3xl border border-brand-200 bg-brand-50/50 p-8 text-center space-y-4">
           <h3 className="text-xl font-bold text-zinc-900">Empower your college student committee</h3>
           <p className="text-xs sm:text-sm text-zinc-600 max-w-xl mx-auto">
             Take your annual fest to commercial production quality with branded e-tickets and live attendance counters.
@@ -231,7 +232,7 @@ export function ForCollegesPage() {
               </Button>
             </Link>
           </div>
-        </div>
+        </Reveal>
       </div>
     </div>
   );
@@ -256,7 +257,7 @@ export function ForOrganizersPage() {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <RevealGroup className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { title: 'Tiered Pricing', desc: 'VIP, Early Bird, General Pass, and Group tables with custom inventory rules.' },
             { title: 'Anti-Passback Lock', desc: 'Row-level database locks ensure no QR pass can be scanned at two gates simultaneously.' },
@@ -268,7 +269,7 @@ export function ForOrganizersPage() {
               <p className="text-xs text-zinc-500 leading-relaxed">{item.desc}</p>
             </div>
           ))}
-        </div>
+        </RevealGroup>
       </div>
     </div>
   );
@@ -291,7 +292,7 @@ export function HelpCenterPage() {
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2">
+        <RevealGroup className="grid gap-6 sm:grid-cols-2">
           <div className="card p-6 space-y-3">
             <h3 className="font-bold text-zinc-900 text-base flex items-center gap-2">
               <Ticket className="h-4 w-4 text-brand-500" /> Attendees: Retrieve Lost Tickets
@@ -315,7 +316,7 @@ export function HelpCenterPage() {
               Open Gate Scanner →
             </Link>
           </div>
-        </div>
+        </RevealGroup>
       </div>
     </div>
   );
@@ -346,7 +347,8 @@ export function ContactPage() {
           </p>
         </div>
 
-        <Card>
+        <Reveal>
+          <Card>
           {submitted ? (
             <div className="py-8 text-center space-y-3">
               <div className="rounded-full bg-emerald-100 p-3 text-emerald-600 inline-block">
@@ -369,6 +371,7 @@ export function ContactPage() {
             </form>
           )}
         </Card>
+        </Reveal>
       </div>
     </div>
   );

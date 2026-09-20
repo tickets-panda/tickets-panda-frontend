@@ -23,6 +23,7 @@ import { PageLoader, EmptyState } from '../shared/components/Feedback.jsx';
 import { StatusBadge } from '../shared/components/Badge.jsx';
 import { formatCurrency, formatDate } from '../shared/utils/format.js';
 import { useAuthStore } from '../shared/store/auth.js';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
@@ -72,7 +73,7 @@ export default function DashboardPage() {
       </div>
 
       {/* KPI Stats Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <RevealGroup className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <Stat
           label="Total Revenue"
           value={formatCurrency(data.revenue)}
@@ -107,7 +108,7 @@ export default function DashboardPage() {
           hint={`${data.liveEvents} currently live`}
           icon={CalendarDays}
         />
-      </div>
+      </RevealGroup>
 
       {/* Operational Overview Grid */}
       <div className="grid gap-6 lg:grid-cols-2">

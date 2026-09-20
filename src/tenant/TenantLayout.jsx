@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import api from '../shared/api/client.js';
 import { useAuthStore } from '../shared/store/auth.js';
+import Reveal from '../shared/components/Reveal.jsx';
 
 const NAV = [
   { to: '/tenant/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -208,7 +209,9 @@ export default function TenantLayout() {
 
         {/* Main Body */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
-          <Outlet />
+          <Reveal key={location.pathname} y={14}>
+            <Outlet />
+          </Reveal>
         </main>
       </div>
     </div>
