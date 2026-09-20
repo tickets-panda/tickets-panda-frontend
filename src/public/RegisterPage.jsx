@@ -127,6 +127,14 @@ export default function RegisterPage() {
 
       const booking = initiate.data.data;
 
+      // 1. If provider is local test payment, navigate to the local simulation checkout
+      if (booking.paymentProvider === 'local' || booking.checkoutUrl) {
+        toast('Redirecting to Local Test Checkout…', { icon: '🧪' });
+        navigate(booking.checkoutUrl || `/checkout/local/${booking.orderRef}`);
+        return;
+      }
+
+      // 2. Future gateway / Razorpay flow
       const result = await openRazorpay({
         key: booking.razorpayKeyId,
         amount: booking.amount,

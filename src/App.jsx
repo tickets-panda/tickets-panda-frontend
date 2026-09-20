@@ -13,6 +13,7 @@ import RegisterPage from './public/RegisterPage.jsx';
 import ConfirmationPage from './public/ConfirmationPage.jsx';
 import MyTicketsPage from './public/MyTicketsPage.jsx';
 import VerifyTicketPage from './public/VerifyTicketPage.jsx';
+import LocalCheckoutPage from './public/LocalCheckoutPage.jsx';
 
 // Tenant dashboard
 import TenantLayout from './tenant/TenantLayout.jsx';
@@ -98,6 +99,7 @@ export default function App() {
         <Route path="/t/:tenantSlug" element={<TenantEventsPage />} />
         <Route path="/t/:tenantSlug/events/:eventSlug" element={<EventDetailPage />} />
         <Route path="/t/:tenantSlug/events/:eventSlug/register" element={<RegisterPage />} />
+        <Route path="/checkout/local/:orderRef" element={<LocalCheckoutPage />} />
         <Route path="/booking/:orderRef" element={<ConfirmationPage />} />
         <Route path="/my-tickets" element={<MyTicketsPage />} />
         <Route path="/verify/:token" element={<VerifyTicketPage />} />
