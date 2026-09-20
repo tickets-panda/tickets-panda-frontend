@@ -1,8 +1,18 @@
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import {
+  CalendarDays,
+  MapPin,
+  Image as ImageIcon,
+  Users,
+  Clock,
+  ArrowLeft,
+  Sparkles,
+  Info,
+} from 'lucide-react';
 import api, { apiErrorMessage, apiFieldErrors } from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
 import Input, { Textarea } from '../shared/components/Input.jsx';
@@ -52,11 +62,11 @@ export default function EventFormPage() {
     try {
       if (isEdit) {
         await api.put(`/tenant/events/${id}`, payload);
-        toast.success('Event updated');
+        toast.success('Event updated successfully');
         navigate(`/tenant/events/${id}`);
       } else {
         const { data: created } = await api.post('/tenant/events', payload);
-        toast.success('Event created — add ticket types next');
+        toast.success('Event created! Now configure activities & ticket tiers.');
         navigate(`/tenant/events/${created.data.event.id}`);
       }
     } catch (error) {
@@ -66,73 +76,138 @@ export default function EventFormPage() {
     }
   };
 
-  if (isEdit && isLoading) return <PageLoader label="Loading event…" />;
+  if (isEdit && isLoading) return <PageLoader label="Loading event configuration…" />;
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <PageHeader
-        title={isEdit ? 'Edit event' : 'Create event'}
-        description="Set the basics now — you can add ticket types and a custom form afterwards."
-      />
+    <div className="mx-auto max-w-3xl space-y-6">
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => navigate(-1)}
+          className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-all"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </button>
+        <div>
+          <h1 className="text-2xl font-black text-slate-900">
+            {isEdit ? 'Edit Event / Festival' : 'Create New Event / Festival'}
+          </h1>
+          <p className="text-xs text-slate-500">
+            {isEdit
+              ? 'Update the event details, venue, and scheduling.'
+              : 'Set up the core festival details. You can add activities, competitions, and tickets next.'}
+          </p>
+        </div>
+      </div>
+
+      {!isEdit && (
+        <div className="rounded-2xl border border-brand-200/80 bg-brand-50/50 p-4 text-xs text-brand-900 flex items-start gap-3">
+          <Sparkles className="h-5 w-5 text-brand-600 mt-0.5 shrink-0" />
+          <div>
+            <p className="font-bold">Multi-Activity Architecture</p>
+            <p className="mt-0.5 text-slate-600">
+              For annual college fests (e.g. cultural fests, symposiums), create the parent festival here, then add
+              individual activities (Battle of Bands, RoboWars, Dance) and link specific admission tickets inside.
+            </p>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <Card title="Event details">
+        {/* Section 1: Event Identity */}
+        <Card title="1. Event Information" subtitle="Brand title, description, and promotional artwork">
           <div className="space-y-4">
             <Input
-              label="Event title"
+              label="Event / Festival Title"
               required
-              placeholder="NGK Fest 2026"
+              placeholder="e.g. Pandaves 2026 — Annual Cultural Fest"
               error={formState.errors.title?.message}
-              {...register('title', { required: 'Title is required' })}
+              {...register('title', { required: 'Event title is required' })}
             />
-            <Textarea label="Description" placeholder="What is this event about?" {...register('description')} />
-            <Input label="Banner image URL" type="url" placeholder="https://…" {...register('bannerUrl')} />
+
+            <Textarea
+              label="Description & Highlights"
+              rows={4}
+              placeholder="Give attendees a thrilling overview of what to expect, celebrity guests, prizes, and theme..."
+              {...register('description')}
+            />
+
+            <Input
+              label="Banner Poster Image URL"
+              type="url"
+              placeholder="https://images.unsplash.com/photo-..."
+              hint="High-resolution landscape image (16:9 recommended)"
+              {...register('bannerUrl')}
+            />
           </div>
         </Card>
 
-        <Card title="Venue & schedule">
+        {/* Section 2: Location & Timing */}
+        <Card title="2. Schedule & Venue" subtitle="Where and when is the event taking place?">
           <div className="space-y-4">
             <Input
-              label="Venue name"
+              label="Venue Name / Auditorium"
               required
-              placeholder="Main Auditorium"
+              placeholder="e.g. Nehru Auditorium & Open Air Grounds"
               error={formState.errors.venueName?.message}
-              {...register('venueName', { required: 'Venue is required' })}
+              {...register('venueName', { required: 'Venue name is required' })}
             />
-            <Textarea label="Venue address" rows={2} {...register('venueAddress')} />
+
+            <Textarea
+              label="Full Campus Address / Hall Details"
+              rows={2}
+              placeholder="e.g. Main Campus, College Road, Block C, Gate 2"
+              {...register('venueAddress')}
+            />
+
             <div className="grid gap-4 sm:grid-cols-3">
               <Input
-                label="Date"
+                label="Event Date"
                 type="date"
                 required
                 error={formState.errors.eventDate?.message}
                 {...register('eventDate', { required: 'Date is required' })}
               />
+
               <Input
-                label="Start time"
+                label="Start Time"
                 type="time"
                 required
                 error={formState.errors.eventTimeStart?.message}
                 {...register('eventTimeStart', { required: 'Start time is required' })}
               />
-              <Input label="End time" type="time" {...register('eventTimeEnd')} />
+
+              <Input label="End Time (optional)" type="time" {...register('eventTimeEnd')} />
             </div>
           </div>
         </Card>
 
-        <Card title="Capacity & deadlines">
+        {/* Section 3: Capacity & Deadlines */}
+        <Card title="3. Capacity & Cut-off" subtitle="Control crowd limits and registration cutoff">
           <div className="grid gap-4 sm:grid-cols-2">
-            <Input label="Maximum capacity" type="number" min="1" placeholder="500" {...register('maxCapacity')} />
-            <Input label="Registration deadline" type="datetime-local" {...register('registrationDeadline')} />
+            <Input
+              label="Maximum Total Capacity"
+              type="number"
+              min="1"
+              placeholder="e.g. 1500 (leave blank for unlimited)"
+              {...register('maxCapacity')}
+            />
+
+            <Input
+              label="Registration Deadline"
+              type="datetime-local"
+              hint="Registration closes automatically at this time"
+              {...register('registrationDeadline')}
+            />
           </div>
         </Card>
 
-        <div className="flex justify-end gap-3">
-          <Button variant="secondary" onClick={() => navigate(-1)}>
+        {/* Form Action Controls */}
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button variant="secondary" onClick={() => navigate(-1)} type="button">
             Cancel
           </Button>
-          <Button type="submit" loading={formState.isSubmitting}>
-            {isEdit ? 'Save changes' : 'Create event'}
+          <Button type="submit" loading={formState.isSubmitting} size="lg">
+            {isEdit ? 'Save Changes' : 'Create & Proceed to Setup'}
           </Button>
         </div>
       </form>

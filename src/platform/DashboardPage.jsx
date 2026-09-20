@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Building2, CalendarDays, CreditCard, Ticket } from 'lucide-react';
+import { Building2, CalendarDays, CreditCard, Ticket, ShieldAlert, ArrowRight, Activity } from 'lucide-react';
 import api from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
 import Stat from '../shared/components/Stat.jsx';
@@ -16,54 +16,102 @@ export default function PlatformDashboard() {
     queryFn: async () => (await api.get('/platform/dashboard/stats')).data.data,
   });
 
-  if (isLoading) return <PageLoader label="Loading platform metrics…" />;
+  if (isLoading) return <PageLoader label="Aggregating platform metrics across all colleges…" />;
   if (!data) return null;
 
   return (
-    <div>
-      <PageHeader title="Platform overview" description="Cross-tenant activity across Ticket Panda." />
+    <div className="space-y-6">
+      <PageHeader
+        title="Platform Control Center"
+        description="Global cross-tenant analytics, institutional tenant governance, and system-wide sales."
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat label="Revenue" value={formatCurrency(data.revenue)} icon={CreditCard} tone="green" />
-        <Stat label="Tenants" value={data.totalTenants} hint={`${data.activeTenants} active`} icon={Building2} />
-        <Stat label="Events" value={data.totalEvents} hint={`${data.liveEvents} live`} icon={CalendarDays} tone="blue" />
-        <Stat label="Paid bookings" value={data.paidOrders} hint={`${data.ticketsIssued} tickets issued`} icon={Ticket} tone="purple" />
+        <Stat
+          label="Total Gross Platform Volume"
+          value={formatCurrency(data.revenue)}
+          icon={CreditCard}
+          tone="green"
+          hint="All processed orders"
+        />
+        <Stat
+          label="Registered Institutions"
+          value={data.totalTenants}
+          hint={`${data.activeTenants} active college tenants`}
+          icon={Building2}
+          tone="purple"
+        />
+        <Stat
+          label="Total Events & Festivals"
+          value={data.totalEvents}
+          hint={`${data.liveEvents} currently live`}
+          icon={CalendarDays}
+          tone="blue"
+        />
+        <Stat
+          label="Paid Bookings"
+          value={data.paidOrders}
+          hint={`${data.ticketsIssued} tickets issued globally`}
+          icon={Ticket}
+          tone="orange"
+        />
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Card title="Recent tenants" bodyClassName="p-0">
-          <Table columns={['Tenant', 'Plan', 'Joined', 'Status']}>
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Recent Tenants Card */}
+        <Card
+          title="Recently Onboarded Institutions"
+          subtitle="Latest colleges registered on Ticket Panda"
+          action={
+            <Link to="/platform/tenants" className="text-xs font-bold text-purple-600 hover:underline">
+              View All ↗
+            </Link>
+          }
+          bodyClassName="p-0"
+        >
+          <Table columns={['College / Tenant', 'Plan', 'Joined', 'Status']}>
             {data.recentTenants.map((tenant) => (
-              <tr key={tenant.id}>
+              <tr key={tenant.id} className="hover:bg-slate-50/80 transition-colors">
                 <Td>
-                  <Link to={`/platform/tenants/${tenant.id}`} className="font-medium text-brand-600 hover:underline">
+                  <Link
+                    to={`/platform/tenants/${tenant.id}`}
+                    className="font-bold text-xs sm:text-sm text-slate-900 hover:text-purple-600 line-clamp-1"
+                  >
                     {tenant.name}
                   </Link>
-                  <span className="block font-mono text-xs text-zinc-500">/{tenant.slug}</span>
+                  <span className="block font-mono text-[10px] text-slate-400">/{tenant.slug}</span>
                 </Td>
-                <Td className="text-xs text-zinc-500">{tenant.subscriptionPlan}</Td>
-                <Td className="text-xs text-zinc-500">{formatDate(tenant.createdAt)}</Td>
+                <Td className="text-xs font-semibold text-slate-600">{tenant.subscriptionPlan}</Td>
+                <Td className="text-xs text-slate-500 whitespace-nowrap">{formatDate(tenant.createdAt)}</Td>
                 <Td>
-                  <StatusBadge status={tenant.status} />
+                  <StatusBadge status={tenant.status} size="xs" />
                 </Td>
               </tr>
             ))}
           </Table>
         </Card>
 
-        <Card title="Tenants by status">
-          <ul className="space-y-3">
+        {/* Tenant Status Distribution */}
+        <Card title="Tenant Governance & Health" subtitle="Operational distribution across all accounts">
+          <ul className="divide-y divide-slate-100">
             {data.tenantsByStatus.map((row) => (
-              <li key={row.status} className="flex items-center justify-between text-sm">
-                <StatusBadge status={row.status} />
-                <span className="font-semibold text-zinc-800">{row.count}</span>
+              <li key={row.status} className="flex items-center justify-between py-3 text-xs">
+                <StatusBadge status={row.status} size="sm" />
+                <span className="font-bold text-slate-900 text-sm">{row.count} institution{row.count > 1 ? 's' : ''}</span>
               </li>
             ))}
           </ul>
+
           {data.suspendedTenants > 0 && (
-            <p className="mt-4 rounded-lg bg-amber-50 p-3 text-xs text-amber-700">
-              {data.suspendedTenants} tenant(s) are currently suspended and cannot access their dashboards.
-            </p>
+            <div className="mt-4 rounded-xl bg-amber-50 border border-amber-200 p-3.5 text-xs text-amber-900 flex items-start gap-2.5">
+              <ShieldAlert className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold">Suspended Accounts ({data.suspendedTenants})</p>
+                <p className="mt-0.5 text-amber-700">
+                  Suspended colleges cannot accept new attendee registrations or access their studio.
+                </p>
+              </div>
+            </div>
           )}
         </Card>
       </div>

@@ -10,6 +10,7 @@ import {
   ChevronDown,
   CreditCard,
   Database,
+  FileSpreadsheet,
   FileText,
   Fingerprint,
   Globe,
@@ -18,11 +19,13 @@ import {
   Layers,
   Lock,
   Mail,
+  MapPin,
   QrCode,
   RefreshCw,
   ScanLine,
   Search,
   Server,
+  ShieldAlert,
   ShieldCheck,
   Sparkles,
   Ticket,
@@ -30,527 +33,688 @@ import {
   UserCheck,
   Users,
   XCircle,
+  Zap,
 } from 'lucide-react';
+import Button from '../shared/components/Button.jsx';
+import TicketCard from '../shared/components/TicketCard.jsx';
+import Badge from '../shared/components/Badge.jsx';
 
 const STATS = [
-  { value: '< 5s', label: 'payment to ticket in inbox' },
-  { value: '< 3s', label: 'per person at the gate' },
-  { value: '100%', label: 'payments verified, never assumed' },
-  { value: 'Zero', label: 'cross-tenant data leaks' },
+  { value: '< 3 sec', label: 'average QR gate check-in' },
+  { value: '100%', label: 'signature-verified payments' },
+  { value: 'Zero', label: 'duplicate or shared pass fraud' },
+  { value: 'Instant', label: 'PDF e-ticket delivery to email' },
 ];
 
-const PROBLEMS = [
-  'Cash, UPI screenshots and bank transfers collected by hand',
-  'Someone eyeballs every screenshot to "confirm" payment',
-  'Ticket numbers assigned manually in a spreadsheet',
-  'Gate staff tick names off a printed list',
-  'No reliable record of who paid, who entered, or what was collected',
-];
-
-const FIXES = [
-  'Razorpay checkout — the gateway collects, not a person',
-  'Payment verified by signature and re-checked against the gateway API',
-  'Ticket generated with a unique key, opaque QR token and PDF',
-  'One scan at the gate; a reused ticket is rejected instantly',
-  'Every registration, payment, ticket and check-in is recorded',
-];
-
-const CHAIN = [
-  { icon: FileText, title: 'Registration', text: 'Attendee fills the fields the organizer defined for that event.' },
-  { icon: CreditCard, title: 'Payment', text: 'Checkout completes through Razorpay — no manual collection.' },
-  { icon: ShieldCheck, title: 'Verification', text: 'Server-side signature check, then confirmed with the gateway.' },
-  { icon: Ticket, title: 'Ticket generation', text: 'Unique ticket key, opaque token and QR image created.' },
-  { icon: Mail, title: 'Delivery', text: 'PDF e-ticket emailed to the attendee within seconds.' },
-  { icon: ScanLine, title: 'Check-in', text: 'QR scanned at the gate; duplicates and fakes are blocked.' },
-  { icon: BarChart3, title: 'Analytics', text: 'Live gate counts, revenue and registrations for the organizer.' },
-  { icon: Fingerprint, title: 'Audit trail', text: 'Append-only record of every critical action on the platform.' },
-];
-
-const AUDIENCES = [
+const WORKFLOW_STEPS = [
   {
-    icon: Server,
-    tag: 'Platform',
-    title: 'Ticket Panda team',
-    points: ['Manage and activate tenants', 'Platform-wide metrics', 'Billing and plan administration', 'Security and audit oversight'],
+    step: '01',
+    icon: CalendarDays,
+    title: 'Create Your Event Page',
+    description: 'Launch a custom college or organizational event portal in minutes. Add multi-tiered activities, competitions, and ticket types.',
   },
   {
-    icon: Building2,
-    tag: 'Organizer',
-    title: 'Colleges, clubs, venues',
-    points: ['Build events and ticket types', 'Design their own registration form', 'Track bookings, payments and revenue', 'Manage gate staff and scanners'],
+    step: '02',
+    icon: FileText,
+    title: 'Collect Custom Registrations',
+    description: 'Design dynamic form fields — text, phone, dropdowns, college ID proof uploads, and team member rosters.',
   },
   {
-    icon: UserCheck,
-    tag: 'Gate staff',
-    title: 'Front-desk and bouncers',
-    points: ['Log in with scoped access', 'Scan QR or type a ticket key', 'See valid / invalid / already-used', 'Watch live checked-in counts'],
+    step: '03',
+    icon: CreditCard,
+    title: 'Automate Verified Payments',
+    description: 'Attendees pay securely online. Eliminates manual UPI screenshot verifications and bank statement matching completely.',
   },
   {
+    step: '04',
     icon: Ticket,
-    tag: 'Attendee',
-    title: 'Students, guests, diners',
-    points: ['Browse the event page', 'Pick a ticket and pay', 'Get the QR by email instantly', 'Access tickets any time via OTP'],
+    title: 'Auto-Generate Digital Tickets',
+    description: 'Each attendee instantly receives a personalized digital pass with an opaque, unforgeable QR code and PDF ticket via email.',
+  },
+  {
+    step: '05',
+    icon: ScanLine,
+    title: 'Lightning QR Gate Check-in',
+    description: 'Event crew scans QR codes from any smartphone. Reused passes, duplicate entries, and fake screenshots are blocked on the spot.',
   },
 ];
 
-const AUDIENCE_TAGS = ['Colleges', 'Festivals', 'Concerts', 'Restaurant nights', 'Exhibitions', 'Workshops', 'Club parties', 'Conferences'];
-
-const ATTENDEE_STEPS = [
-  { icon: Globe, title: 'Find the event', text: 'Open the organizer\u2019s page from a shared link or code — no app to install.' },
-  { icon: CreditCard, title: 'Register and pay', text: 'Pick a ticket type, fill in the form and pay securely. No screenshot requests, ever.' },
-  { icon: QrCode, title: 'Show your QR', text: 'The e-ticket lands in your inbox. Show the QR at the gate and walk in.' },
-];
-
-const FEATURES = [
-  { icon: CalendarDays, title: 'Event builder', text: 'Title, banner, description, venue, schedule and capacity.' },
-  { icon: Layers, title: 'Ticket types', text: 'Multiple tiers per event with their own price and quantity.' },
-  { icon: FileText, title: 'Dynamic forms', text: 'Text, dropdown, radio, checkbox, number, date and more — per event.' },
-  { icon: Globe, title: 'Publish and share', text: 'Publish when ready and share one clean event link.' },
-  { icon: CreditCard, title: 'Bookings and payments', text: 'Filter registrations and inspect the payment behind each one.' },
-  { icon: Users, title: 'Staff accounts', text: 'Give gate staff exactly the access they need and nothing more.' },
-  { icon: ScanLine, title: 'QR scanner', text: 'Camera scan or manual ticket-key entry for broken or dim screens.' },
-  { icon: TrendingUp, title: 'Live gate stats', text: 'See checked-in counts update as the queue moves.' },
-  { icon: BarChart3, title: 'Dashboards', text: 'Events, bookings, revenue and check-ins at a glance.' },
-];
-
-const SECURITY = [
-  { icon: ShieldCheck, title: 'Cryptographic payment verification', text: 'The payment signature is verified server-side, then re-confirmed against Razorpay\u2019s API before a ticket is allowed to exist.' },
-  { icon: Lock, title: 'No manual trust', text: 'A screenshot is never treated as proof of payment. Only the gateway can say a payment happened.' },
-  { icon: Database, title: 'Tenant data isolation', text: 'Every query is scoped to its tenant. Cross-tenant lookups are rejected, not filtered.' },
-  { icon: KeyRound, title: 'Opaque ticket tokens', text: 'The QR holds a random token — never a name, phone number or email address.' },
-  { icon: BadgeCheck, title: 'Role-based access control', text: 'Platform admins, organizers and gate staff hold strictly separate permissions.' },
-  { icon: Fingerprint, title: 'Audit logging', text: 'An append-only trail of critical actions, plus rate limits and hardened security headers.' },
-];
-
-const PLANS = [
-  { name: 'Free', blurb: 'For a first event or a one-off fest.', points: ['Limited events per month', 'QR tickets and check-in', 'Standard support'], cta: 'Start free' },
-  { name: 'Starter', blurb: 'For clubs running a season of events.', points: ['More events per month', 'Basic analytics', 'Staff accounts'], cta: 'Get Starter', highlight: true },
-  { name: 'Business', blurb: 'For venues and agencies at volume.', points: ['Unlimited events', 'Custom branding', 'API access'], cta: 'Talk to us' },
-  { name: 'Enterprise', blurb: 'For organizations with their own domain.', points: ['Custom domain', 'SLA and priority support', 'Onboarding assistance'], cta: 'Contact sales' },
+const EVENT_EXAMPLES = [
+  {
+    category: 'College Cultural Fest',
+    title: 'Pandaves 2026',
+    organizer: 'Nehru College of Engineering',
+    activities: ['Solo Dance', 'Group Dance', 'Battle of Bands', 'Fashion Walk'],
+    capacity: '3,500 Attendees',
+    tone: 'brand',
+    badge: 'Flagship Fest',
+  },
+  {
+    category: 'Technical Symposium',
+    title: 'HackPanda Hackathon',
+    organizer: 'Department of Computer Science',
+    activities: ['24-Hr Hackathon', 'Code Sprint', 'Web3 Ideathon', 'Paper Presentation'],
+    capacity: '600 Participants',
+    tone: 'purple',
+    badge: 'Tech & Dev',
+  },
+  {
+    category: 'Conference & Summit',
+    title: 'National Robotics Conclave',
+    organizer: 'Robotics & Automation Society',
+    activities: ['Keynote Sessions', 'RoboWars', 'Drone Racing', 'Project Expo'],
+    capacity: '1,200 Delegates',
+    tone: 'blue',
+    badge: 'National Level',
+  },
+  {
+    category: 'Concert & Pro-Night',
+    title: 'Spring Euphoria 2026',
+    organizer: 'Student Welfare Union',
+    activities: ['DJ Night Pass', 'VIP Lounge', 'General Stage Arena'],
+    capacity: '5,000 Passes',
+    tone: 'green',
+    badge: 'Live Concert',
+  },
 ];
 
 const FAQS = [
-  { q: 'Do attendees need to create an account?', a: 'No. They buy with their details and can reopen their tickets any time using a one-time code sent to their phone or email — no password to remember.' },
-  { q: 'How do you stop fake payment screenshots?', a: 'Screenshots are never accepted. The payment signature is verified on the server and then re-confirmed directly with the gateway API, so a ticket is only issued for a payment that actually happened.' },
-  { q: 'What happens if the same ticket is scanned twice?', a: 'The first successful scan marks the ticket as used. The next scan is rejected as already used, and the attempt is recorded against the staff member who made it.' },
-  { q: 'Can an organizer ask for their own questions?', a: 'Yes. Each event has its own registration form built from the field types the organizer chooses — short text, long text, dropdown, single choice, checkboxes, number, date and more.' },
-  { q: 'Is one organization\u2019s data visible to another?', a: 'No. Tenant isolation is enforced on every query, and platform-level access is a separate, audited role.' },
-  { q: 'What exactly does the attendee receive?', a: 'An email with a PDF ticket and QR code, plus a confirmation page. The same ticket can be downloaded again from My Tickets.' },
+  {
+    question: 'How does Ticket Panda stop duplicate payment screenshots and entry fraud?',
+    answer:
+      'Unlike manual Google Forms where organizers inspect forged payment screenshots, Ticket Panda processes payments through verified digital rails. Digital tickets with high-entropy cryptographic QR tokens are generated server-side. At the gate, each ticket is row-locked in the database upon the first scan — preventing any ticket from being admitted twice.',
+  },
+  {
+    question: 'Can colleges run multi-activity festivals (e.g. Solo Dance, Quiz, Band)?',
+    answer:
+      'Yes! Ticket Panda features a dedicated Activity layer designed specifically for college festivals. An annual festival like "Pandaves 2026" can have distinct activities with independent capacities, individual rules, custom registration requirements (e.g. college ID upload), and specialized pricing.',
+  },
+  {
+    question: 'Do gate scanners require special hardware or hand-held devices?',
+    answer:
+      'No expensive hardware needed. Any authorized staff member or student volunteer logs into the Ticket Panda Scanner on their own smartphone browser. The high-performance HTML5 camera scanner reads attendee QR codes in under 3 seconds.',
+  },
+  {
+    question: 'What happens if an attendee loses their email or ticket?',
+    answer:
+      'Attendees can visit the "My Tickets" portal on Ticket Panda and enter their registered email to receive an instant, secure login code. They can view, screenshot, or download all their active passes anytime.',
+  },
+  {
+    question: 'Can we collect document uploads such as College ID or Consent forms?',
+    answer:
+      'Yes. The registration form builder supports drag-and-drop document upload fields with file type restrictions (PDF, PNG, JPG) and size limits. Uploaded documents are linked directly to the attendee profile.',
+  },
 ];
 
-function Section({ eyebrow, title, subtitle, children, dark = false, className = '' }) {
-  return (
-    <section className={`mx-auto max-w-6xl px-4 py-14 sm:py-20 ${className}`}>
-      <div className="mx-auto max-w-2xl text-center">
-        {eyebrow && (
-          <p className={`text-xs font-bold uppercase tracking-widest ${dark ? 'text-brand-300' : 'text-brand-600'}`}>
-            {eyebrow}
-          </p>
-        )}
-        <h2
-          className={`mt-2 text-2xl font-bold tracking-tight sm:text-3xl ${
-            dark ? 'text-white' : 'text-zinc-900'
-          }`}
-        >
-          {title}
-        </h2>
-        {subtitle && (
-          <p className={`mt-3 text-sm sm:text-base ${dark ? 'text-zinc-400' : 'text-zinc-600'}`}>{subtitle}</p>
-        )}
-      </div>
-      {children}
-    </section>
-  );
-}
-
 export default function LandingPage() {
-  const [slug, setSlug] = useState('');
-  const [openFaq, setOpenFaq] = useState(0);
   const navigate = useNavigate();
-
-  const go = (event) => {
-    event.preventDefault();
-    const clean = slug.trim().replace(/^\/+|\/+$/g, '');
-    if (clean) navigate(`/t/${clean}`);
-  };
+  const [openFaq, setOpenFaq] = useState(0);
 
   return (
-    <div>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-white via-brand-50 to-zinc-50">
-        <div className="mx-auto max-w-6xl px-4 pb-14 pt-16 text-center sm:pb-20 sm:pt-24">
-          <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white/80 px-3 py-1 text-xs font-semibold text-brand-700">
-            <Sparkles className="h-3.5 w-3.5" /> Multi-tenant ticketing platform
-          </span>
-          <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight text-zinc-900 sm:text-5xl">
-            Sell tickets. Verify payments. Scan at the gate.
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base text-zinc-600 sm:text-lg">
-            Ticket Panda automates the whole chain for any paid event — registration, payment verification,
-            ticket generation, QR delivery and event-day entry. No spreadsheets, no screenshots, no manual
-            checking at the door.
-          </p>
+    <div className="overflow-hidden">
+      {/* ========================================================================= */}
+      {/* 1. HERO SECTION */}
+      {/* ========================================================================= */}
+      <section className="relative border-b border-zinc-200/80 bg-gradient-to-b from-white via-zinc-50/50 to-white pt-12 pb-20 lg:pt-20 lg:pb-28">
+        {/* Subtle grid backdrop */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-70 pointer-events-none" />
 
-          <form onSubmit={go} className="mx-auto mt-8 flex max-w-md items-center gap-2" id="find-event">
-            <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-              <input
-                value={slug}
-                onChange={(event) => setSlug(event.target.value)}
-                placeholder="Enter an organizer code, e.g. demo-college"
-                className="input pl-9"
-                aria-label="Organizer code"
-              />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+            {/* Left Copy (7 cols) */}
+            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 rounded-full border border-brand-200/80 bg-brand-50/90 px-3.5 py-1 text-xs font-bold text-brand-700 shadow-subtle">
+                <Sparkles className="h-3.5 w-3.5 text-brand-500 animate-pulse" />
+                <span>The Event Ticketing Operating System for Colleges & Organizations</span>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-zinc-950 leading-[1.08] font-display">
+                From registration to entry,{' '}
+                <span className="bg-gradient-to-r from-brand-600 to-orange-500 bg-clip-text text-transparent">
+                  handled by Ticket Panda.
+                </span>
+              </h1>
+
+              <p className="max-w-2xl text-base sm:text-lg text-zinc-600 leading-relaxed font-normal">
+                Create branded event pages, collect verified registrations, issue secure digital e-tickets, and check attendees in with sub-second QR scanning. Say goodbye to manual Google Forms and fake payment screenshots forever.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5">
+                <Button
+                  size="xl"
+                  variant="primary"
+                  rightIcon={ArrowRight}
+                  onClick={() => navigate('/tenant/register')}
+                >
+                  Create an Event
+                </Button>
+                <Button
+                  size="xl"
+                  variant="secondary"
+                  leftIcon={CalendarDays}
+                  onClick={() => navigate('/events')}
+                >
+                  Explore Events
+                </Button>
+              </div>
+
+              {/* Trust Indicators */}
+              <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs font-semibold text-zinc-500">
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <span>No special hardware needed</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <span>Anti-duplicate QR gate security</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <span>Instant PDF ticket dispatch</span>
+                </div>
+              </div>
             </div>
-            <button
-              type="submit"
-              className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-600"
-            >
-              Find event <ArrowRight className="h-4 w-4" />
-            </button>
-          </form>
 
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-zinc-500">
-            <Link to="/tenant/register" className="font-semibold text-brand-600 hover:underline">
-              Create an organizer account
-            </Link>
-            <span className="text-zinc-300">•</span>
-            <Link to="/tenant/login" className="font-semibold text-brand-600 hover:underline">
-              Organizer sign in
-            </Link>
-            <span className="text-zinc-300">•</span>
-            <Link to="/my-tickets" className="font-semibold text-brand-600 hover:underline">
-              Already have tickets?
-            </Link>
+            {/* Right Product Preview UI (5 cols) */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative mx-auto max-w-md lg:max-w-none">
+                {/* Visual Glass Glow */}
+                <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-brand-500/20 to-orange-400/10 blur-xl -z-10" />
+
+                {/* Simulated Digital Ticket Artifact */}
+                <div className="transform transition-transform hover:-translate-y-1 duration-300">
+                  <div className="card overflow-hidden border-zinc-200/90 shadow-ticket bg-white">
+                    {/* Ticket Header */}
+                    <div className="bg-zinc-950 px-5 py-3 text-white flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">🐼</span>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-brand-400">
+                            Verified Pass
+                          </p>
+                          <p className="text-xs font-bold text-zinc-200">
+                            Nehru College of Engineering
+                          </p>
+                        </div>
+                      </div>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 text-[10px] font-bold text-emerald-300">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        ADMIT ONE
+                      </span>
+                    </div>
+
+                    {/* Ticket Body */}
+                    <div className="p-5 space-y-4">
+                      <div>
+                        <span className="text-[11px] font-extrabold uppercase tracking-wider text-brand-600">
+                          Pandaves 2026 · Cultural Fest
+                        </span>
+                        <h3 className="text-lg font-black text-zinc-950">
+                          Solo Dance Competition
+                        </h3>
+                        <p className="text-xs text-zinc-500">
+                          15 October 2026 · 10:00 AM · Main Auditorium
+                        </p>
+                      </div>
+
+                      {/* Details row */}
+                      <div className="grid grid-cols-2 gap-2 rounded-xl bg-zinc-50 p-3 text-xs">
+                        <div>
+                          <p className="text-[10px] text-zinc-400 font-bold uppercase">Participant</p>
+                          <p className="font-bold text-zinc-900 truncate">Vishnu B</p>
+                          <p className="text-[11px] text-zinc-500">24DS123 · College ID</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-zinc-400 font-bold uppercase">Gate Status</p>
+                          <p className="font-bold text-emerald-600">Verified & Active</p>
+                          <p className="text-[11px] text-zinc-500">Tier: General Entry</p>
+                        </div>
+                      </div>
+
+                      {/* Perforation Cut */}
+                      <div className="relative my-2 flex items-center justify-center">
+                        <div className="absolute -left-9 h-5 w-5 rounded-full bg-zinc-100 border-r border-zinc-200" />
+                        <div className="w-full border-t-2 border-dashed border-zinc-200" />
+                        <div className="absolute -right-9 h-5 w-5 rounded-full bg-zinc-100 border-l border-zinc-200" />
+                      </div>
+
+                      {/* Mock QR + Key */}
+                      <div className="flex items-center gap-4">
+                        <div className="rounded-xl border-2 border-zinc-900 p-1.5 bg-white shrink-0 shadow-sm">
+                          <QrCode className="h-20 w-20 text-zinc-950" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-mono text-xs font-black tracking-wider text-zinc-900">
+                            TP-NGK26-8F72KD
+                          </p>
+                          <p className="text-[11px] text-zinc-500 mt-1 leading-snug">
+                            Scan with Ticket Panda Scanner at Gate 01 for instant entry.
+                          </p>
+                          <div className="mt-2 flex items-center gap-1 text-[11px] font-bold text-emerald-600">
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            <span>Payment Verified Online</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Live Scanner Callout Pill */}
+                    <div className="border-t border-zinc-100 bg-zinc-50/80 px-5 py-2.5 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-1.5 text-zinc-600">
+                        <ScanLine className="h-3.5 w-3.5 text-brand-500" />
+                        <span>Scanner validation speed: <strong>1.2s</strong></span>
+                      </div>
+                      <span className="font-mono text-[10px] text-zinc-400">UUID v4 Token</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating Metrics Badge */}
+                <div className="absolute -bottom-5 -left-4 rounded-2xl border border-zinc-200 bg-white p-3.5 shadow-card hidden sm:flex items-center gap-3">
+                  <div className="rounded-xl bg-emerald-100 p-2 text-emerald-700">
+                    <TrendingUp className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-zinc-500 font-medium">Pandaves Live Check-ins</p>
+                    <p className="text-sm font-black text-zinc-900">1,428 / 1,500 Ingressed (95%)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <dl className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="rounded-xl border border-zinc-200 bg-white/70 px-3 py-4">
-                <dt className="text-2xl font-extrabold tracking-tight text-brand-600">{stat.value}</dt>
-                <dd className="mt-1 text-xs leading-snug text-zinc-600">{stat.label}</dd>
+          {/* Quick KPI Bar */}
+          <div className="mt-16 grid grid-cols-2 gap-4 rounded-3xl border border-zinc-200/80 bg-white p-6 shadow-subtle sm:grid-cols-4">
+            {STATS.map((stat, i) => (
+              <div key={i} className="text-center sm:text-left sm:border-r last:border-0 border-zinc-100 sm:px-4">
+                <p className="text-2xl sm:text-3xl font-black tracking-tight text-zinc-950 font-display">
+                  {stat.value}
+                </p>
+                <p className="mt-1 text-xs text-zinc-500 font-medium">{stat.label}</p>
               </div>
             ))}
-          </dl>
+          </div>
         </div>
       </section>
 
-      {/* The problem */}
-      <Section
-        eyebrow="The problem"
-        title="Running a gate on trust is expensive"
-        subtitle="Most events still reconcile payments by hand. It is slow, it does not scale, and it leaks money through fraud and honest mistakes."
-      >
-        <div className="mt-10 grid gap-5 lg:grid-cols-2">
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6">
-            <h3 className="flex items-center gap-2 text-sm font-bold text-zinc-900">
-              <XCircle className="h-4 w-4 text-red-500" /> The manual way
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {PROBLEMS.map((item) => (
-                <li key={item} className="flex gap-3 text-sm text-zinc-600">
-                  <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
-                  {item}
-                </li>
-              ))}
-            </ul>
+      {/* ========================================================================= */}
+      {/* 2. THE PROBLEM VS TICKET PANDA SOLUTION */}
+      {/* ========================================================================= */}
+      <section className="py-20 bg-white border-b border-zinc-200/80">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mx-auto max-w-3xl text-center space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-600">
+              Why Event Organizers Switch
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-zinc-950 font-display">
+              The end of manual spreadsheets and payment screenshots.
+            </h2>
+            <p className="text-sm sm:text-base text-zinc-600">
+              College events and festivals used to be an operational nightmare. See how Ticket Panda eliminates every manual friction point.
+            </p>
           </div>
-          <div className="rounded-2xl border-2 border-brand-300 bg-white p-6 shadow-sm">
-            <h3 className="flex items-center gap-2 text-sm font-bold text-zinc-900">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" /> With Ticket Panda
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {FIXES.map((item) => (
-                <li key={item} className="flex gap-3 text-sm text-zinc-700">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </Section>
 
-      {/* The chain */}
-      <div className="bg-zinc-900">
-        <Section
-          eyebrow="How it works"
-          title="One automated chain, end to end"
-          subtitle="Every step that used to be a person is now a system step — and each one leaves a record behind."
-          dark
-        >
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {CHAIN.map(({ icon: Icon, title, text }, index) => (
-              <div key={title} className="rounded-xl border border-zinc-700 bg-zinc-800/60 p-5">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex rounded-lg bg-brand-500/15 p-2 text-brand-400">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <span className="text-xs font-bold text-zinc-500">{String(index + 1).padStart(2, '0')}</span>
+          <div className="mt-14 grid gap-8 md:grid-cols-2">
+            {/* The Old Broken Way */}
+            <div className="rounded-3xl border border-rose-200 bg-rose-50/40 p-8 space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="rounded-xl bg-rose-100 p-2.5 text-rose-700">
+                  <ShieldAlert className="h-6 w-6" />
                 </div>
-                <h3 className="mt-4 text-sm font-semibold text-white">{title}</h3>
-                <p className="mt-1 text-xs leading-relaxed text-zinc-400">{text}</p>
+                <div>
+                  <h3 className="text-lg font-bold text-rose-950">The Old Manual Mess</h3>
+                  <p className="text-xs text-rose-800">Prone to fraud, chaos at the gate, and human burnout</p>
+                </div>
               </div>
-            ))}
-          </div>
-        </Section>
-      </div>
 
-      {/* Who it's for */}
-      <Section
-        eyebrow="Who it's for"
-        title="One platform, four kinds of user"
-        subtitle="Everyone gets their own view, their own permissions and their own job to do."
-      >
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {AUDIENCES.map(({ icon: Icon, tag, title, points }) => (
-            <div key={tag} className="card p-5">
-              <span className="inline-flex rounded-lg bg-brand-50 p-2 text-brand-600">
-                <Icon className="h-5 w-5" />
-              </span>
-              <p className="mt-3 text-xs font-bold uppercase tracking-wider text-brand-600">{tag}</p>
-              <h3 className="text-sm font-semibold text-zinc-900">{title}</h3>
-              <ul className="mt-3 space-y-2">
-                {points.map((point) => (
-                  <li key={point} className="flex gap-2 text-xs text-zinc-600">
-                    <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
-                    {point}
-                  </li>
-                ))}
+              <ul className="space-y-4 text-xs sm:text-sm text-rose-900">
+                <li className="flex items-start gap-2.5">
+                  <XCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
+                  <span><strong>Google Forms + Screenshot Upload:</strong> Volunteers spend hours manually inspecting UPI screenshots that can be forged in Photoshop.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <XCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
+                  <span><strong>Cluttered Spreadsheets:</strong> Disjointed lists with missing entries, duplicate phone numbers, and untracked cancellations.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <XCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
+                  <span><strong>Manual WhatsApp Ticket Distribution:</strong> Volunteers copy-paste ticket numbers into WhatsApp DMs or send generic unverified PDFs.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <XCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
+                  <span><strong>Gate Chaos:</strong> Bouncers tick names off printed paper sheets. One person forwards a ticket image to 5 friends, causing gate stampedes.</span>
+                </li>
               </ul>
             </div>
-          ))}
-        </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
-          <span className="text-xs font-semibold text-zinc-500">Built for:</span>
-          {AUDIENCE_TAGS.map((tag) => (
-            <span key={tag} className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-600">
-              {tag}
-            </span>
-          ))}
-        </div>
-      </Section>
-
-      {/* Attendee journey */}
-      <div className="bg-white">
-        <Section
-          eyebrow="For attendees"
-          title="Three steps from link to gate"
-          subtitle="Nothing to install, no account to create, no password to forget."
-        >
-          <div className="mt-10 grid gap-5 sm:grid-cols-3">
-            {ATTENDEE_STEPS.map(({ icon: Icon, title, text }, index) => (
-              <div key={title} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-500 text-sm font-bold text-white">
-                    {index + 1}
-                  </span>
-                  <Icon className="h-5 w-5 text-brand-600" />
+            {/* The Ticket Panda Way */}
+            <div className="rounded-3xl border border-emerald-200 bg-emerald-50/40 p-8 space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="rounded-xl bg-emerald-100 p-2.5 text-emerald-700">
+                  <ShieldCheck className="h-6 w-6" />
                 </div>
-                <h3 className="mt-4 text-sm font-semibold text-zinc-900">{title}</h3>
-                <p className="mt-1 text-sm text-zinc-600">{text}</p>
+                <div>
+                  <h3 className="text-lg font-bold text-emerald-950">The Ticket Panda Pipeline</h3>
+                  <p className="text-xs text-emerald-800">Automated, verified, unforgeable, and stress-free</p>
+                </div>
               </div>
-            ))}
-          </div>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              to="/t/demo-college"
-              className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
-            >
-              See a live event page <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/my-tickets"
-              className="inline-flex items-center gap-2 rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-50"
-            >
-              <Ticket className="h-4 w-4" /> Open My Tickets
-            </Link>
-          </div>
-        </Section>
-      </div>
-
-      {/* Organizer features */}
-      <Section
-        eyebrow="For organizers"
-        title="Everything the event desk needs"
-        subtitle="Set the event up once, then watch the bookings, payments and gate traffic come in."
-      >
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map(({ icon: Icon, title, text }) => (
-            <div key={title} className="card p-5 transition hover:border-brand-300 hover:shadow-md">
-              <span className="inline-flex rounded-lg bg-brand-50 p-2 text-brand-600">
-                <Icon className="h-5 w-5" />
-              </span>
-              <h3 className="mt-3 text-sm font-semibold text-zinc-900">{title}</h3>
-              <p className="mt-1 text-sm text-zinc-600">{text}</p>
+              <ul className="space-y-4 text-xs sm:text-sm text-emerald-950">
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>Verified Digital Checkout:</strong> Registrations are only confirmed when payment settles. Zero manual screenshot checking required.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>Automated E-Ticket Delivery:</strong> Attendees instantly receive cryptographic QR tickets on-screen and as downloadable PDFs in email.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>Sub-Second Gate Ingress:</strong> Staff scans QR codes with any smartphone camera. Reused tickets trigger instant red alerts.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <span><strong>Real-Time Organizer Dashboard:</strong> Track live ticket sales, revenue breakdowns, and gate attendance counts per minute.</span>
+                </li>
+              </ul>
             </div>
-          ))}
+          </div>
         </div>
-      </Section>
+      </section>
 
-      {/* Security */}
-      <div className="bg-gradient-to-b from-brand-800 to-brand-900">
-        <Section
-          eyebrow="Security"
-          title="No manual trust, anywhere in the chain"
-          subtitle="The whole point of the platform is that a ticket exists only because a verified payment created one."
-          dark
-        >
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {SECURITY.map(({ icon: Icon, title, text }) => (
-              <div key={title} className="rounded-xl border border-white/15 bg-white/10 p-5 backdrop-blur">
-                <span className="inline-flex rounded-lg bg-white/15 p-2 text-white">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <h3 className="mt-3 text-sm font-semibold text-white">{title}</h3>
-                <p className="mt-1 text-xs leading-relaxed text-brand-50">{text}</p>
+      {/* ========================================================================= */}
+      {/* 3. 5-STEP HOW IT WORKS */}
+      {/* ========================================================================= */}
+      <section className="py-20 bg-zinc-50 border-b border-zinc-200/80">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mx-auto max-w-2xl text-center space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-600">
+              Simple 5-Step Architecture
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-zinc-950 font-display">
+              How Ticket Panda powers your event
+            </h2>
+            <p className="text-sm text-zinc-600">
+              From the moment an event is announced until the last attendee enters the gate.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+            {WORKFLOW_STEPS.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={index}
+                  className="card relative flex flex-col justify-between p-6 border-zinc-200/90 hover:border-brand-300 hover:shadow-card-hover transition-all"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="rounded-xl bg-brand-50 p-3 text-brand-600">
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <span className="text-xl font-black font-display text-zinc-300">
+                        {item.step}
+                      </span>
+                    </div>
+                    <h3 className="text-base font-bold text-zinc-900 leading-snug">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs text-zinc-500 leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 4. REAL PRODUCT EXAMPLES FOR COLLEGES & ORGANIZERS */}
+      {/* ========================================================================= */}
+      <section className="py-20 bg-white border-b border-zinc-200/80">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-600">
+                Versatile Formats
+              </span>
+              <h2 className="mt-1 text-3xl font-black tracking-tight text-zinc-950 font-display">
+                Built for every kind of gathering
+              </h2>
+              <p className="mt-1 text-xs sm:text-sm text-zinc-500">
+                From inter-college cultural battles with 50 competitions to national technical conferences.
+              </p>
+            </div>
+            <Link
+              to="/events"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 hover:text-brand-700"
+            >
+              Browse live public events <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {EVENT_EXAMPLES.map((ex, i) => (
+              <div
+                key={i}
+                className="card flex flex-col justify-between p-6 border-zinc-200 hover:border-zinc-300 transition-all hover:shadow-card"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                      {ex.category}
+                    </span>
+                    <Badge tone={ex.tone} size="xs">
+                      {ex.badge}
+                    </Badge>
+                  </div>
+
+                  <h3 className="mt-3 text-lg font-black text-zinc-900">
+                    {ex.title}
+                  </h3>
+                  <p className="mt-1 text-xs font-medium text-brand-600">
+                    {ex.organizer}
+                  </p>
+
+                  <div className="mt-4 border-t border-zinc-100 pt-3">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2">
+                      Featured Activities
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {ex.activities.map((act, idx) => (
+                        <span
+                          key={idx}
+                          className="rounded-md bg-zinc-100 px-2 py-1 text-[11px] font-medium text-zinc-700"
+                        >
+                          {act}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-3 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500">
+                  <span>Capacity: {ex.capacity}</span>
+                  <span className="font-bold text-emerald-600">QR Protected</span>
+                </div>
               </div>
             ))}
           </div>
-        </Section>
-      </div>
+        </div>
+      </section>
 
-      {/* Product boundary */}
-      <Section
-        eyebrow="Scope"
-        title="What is in — and what is not"
-        subtitle="Being clear about the boundary is part of the design."
-      >
-        <div className="mt-10 grid gap-5 lg:grid-cols-2">
-          <div className="rounded-2xl border border-zinc-200 bg-white p-6">
-            <h3 className="flex items-center gap-2 text-sm font-bold text-zinc-900">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" /> Available today
-            </h3>
-            <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
-              {['Multi-tenant architecture', 'Events and ticket types', 'Dynamic registration forms', 'Razorpay payments', 'Signature verification', 'Ticket generation with QR', 'PDF tickets by email', 'OTP access to My Tickets', 'Scanner check-in for staff', 'Organizer dashboard', 'Platform admin dashboard', 'Audit logging and RBAC'].map((item) => (
-                <li key={item} className="flex gap-2 text-sm text-zinc-600">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
-            <h3 className="flex items-center gap-2 text-sm font-bold text-zinc-900">
-              <RefreshCw className="h-4 w-4 text-zinc-400" /> On the roadmap
-            </h3>
-            <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
-              {['Embeddable widget', 'Public REST API', 'Tenant webhooks', 'CSV and PDF exports', 'Refund management', 'Event reminders', 'Custom tenant branding', 'SaaS billing', 'Assigned seating', 'Multi-currency', 'Native mobile app', 'Offline check-in'].map((item) => (
-                <li key={item} className="flex gap-2 text-sm text-zinc-500">
-                  <RefreshCw className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400" />
-                  {item}
-                </li>
-              ))}
-            </ul>
+      {/* ========================================================================= */}
+      {/* 5. QR GATE VERIFICATION SHOWCASE */}
+      {/* ========================================================================= */}
+      <section className="py-20 bg-zinc-950 text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mt-12 -mr-12 h-96 w-96 rounded-full bg-brand-500/10 blur-3xl pointer-events-none" />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 relative">
+          <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+            {/* Left text */}
+            <div className="lg:col-span-6 space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-3.5 py-1 text-xs font-bold text-brand-400">
+                <ScanLine className="h-4 w-4" />
+                <span>Anti-Passback & Dual-Entry Prevention</span>
+              </div>
+
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white font-display">
+                High-speed verification built for chaotic festival gates.
+              </h2>
+
+              <p className="text-sm sm:text-base text-zinc-400 leading-relaxed">
+                When 2,000 students arrive at once, slow check-in turns into security hazards. Ticket Panda’s browser scanner validates passes in under 3 seconds with distinct visual and audio cues.
+              </p>
+
+              <div className="space-y-4 pt-2">
+                <div className="flex items-start gap-3">
+                  <div className="rounded-lg bg-emerald-500/20 p-2 text-emerald-400 shrink-0">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Instant First Scan: VALID (Green)</h4>
+                    <p className="text-xs text-zinc-400 mt-0.5">Displays attendee name, activity, and ticket type. Atomically marks ticket as USED in database.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="rounded-lg bg-amber-500/20 p-2 text-amber-400 shrink-0">
+                    <ShieldAlert className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Reused Ticket: REJECTED (Amber)</h4>
+                    <p className="text-xs text-zinc-400 mt-0.5">Screenshots sent to friends trigger a bold alert showing the exact previous check-in time and gate.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="rounded-lg bg-rose-500/20 p-2 text-rose-400 shrink-0">
+                    <XCircle className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Fake / Unregistered QR: INVALID (Red)</h4>
+                    <p className="text-xs text-zinc-400 mt-0.5">Forged QR codes or passes belonging to another event are blocked instantly.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Interactive Mock Viewfinder */}
+            <div className="lg:col-span-6 flex justify-center">
+              <div className="w-full max-w-sm rounded-3xl border border-zinc-800 bg-zinc-900 p-5 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-xs font-bold text-zinc-200">Scanner Live · Gate 01</span>
+                  </div>
+                  <span className="rounded bg-zinc-800 px-2 py-0.5 font-mono text-[10px] text-zinc-400">FPS: 30</span>
+                </div>
+
+                {/* Viewfinder box */}
+                <div className="scanner-viewfinder relative flex flex-col items-center justify-center rounded-2xl border border-zinc-800 bg-black/60 h-64 p-4 text-center">
+                  <div className="rounded-xl border border-dashed border-brand-500/60 p-4 bg-brand-500/5">
+                    <QrCode className="h-28 w-28 text-brand-400 opacity-90 animate-pulse" />
+                  </div>
+                  <p className="mt-3 text-[11px] text-zinc-400">Align attendee QR code inside frame</p>
+                </div>
+
+                {/* Mock Live Result Banner */}
+                <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/40 p-3.5 flex items-center gap-3">
+                  <CheckCircle2 className="h-6 w-6 text-emerald-400 shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-black text-emerald-300 uppercase tracking-wide">✓ VALID ENTRY</span>
+                      <span className="text-[10px] text-zinc-400">Just now</span>
+                    </div>
+                    <p className="text-xs font-bold text-white truncate">Vishnu B · Solo Dance</p>
+                    <p className="text-[10px] font-mono text-zinc-400 truncate">Key: TP-NGK26-8F72KD</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </Section>
+      </section>
 
-      {/* Plans */}
-      <div className="bg-white">
-        <Section
-          eyebrow="Plans"
-          title="Pricing that starts free"
-          subtitle="Plans are provisioned per organization, so each tenant keeps its own events, data and staff."
-        >
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {PLANS.map((plan) => (
-              <div
-                key={plan.name}
-                className={`flex flex-col rounded-2xl border p-6 ${
-                  plan.highlight ? 'border-brand-400 bg-brand-50 shadow-md' : 'border-zinc-200 bg-white'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-zinc-900">{plan.name}</h3>
-                  {plan.highlight && (
-                    <span className="rounded-full bg-brand-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-                      Popular
-                    </span>
+      {/* ========================================================================= */}
+      {/* 6. FAQ ACCORDION */}
+      {/* ========================================================================= */}
+      <section className="py-20 bg-white border-b border-zinc-200/80">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+          <div className="text-center space-y-3 mb-12">
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-600">
+              Common Questions
+            </span>
+            <h2 className="text-3xl font-black tracking-tight text-zinc-950 font-display">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-500">
+              Everything organizers and attendees need to know about Ticket Panda.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {FAQS.map((faq, index) => {
+              const isOpen = openFaq === index;
+              return (
+                <div
+                  key={index}
+                  className="rounded-2xl border border-zinc-200/80 bg-white overflow-hidden transition-all"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : index)}
+                    className="w-full px-6 py-4.5 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-zinc-900 hover:text-brand-600 transition"
+                  >
+                    <span>{faq.question}</span>
+                    <ChevronDown
+                      className={`h-4 w-4 text-zinc-400 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180 text-brand-600' : ''
+                      }`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="px-6 pb-5 pt-1 text-xs sm:text-sm text-zinc-600 leading-relaxed border-t border-zinc-100 bg-zinc-50/50">
+                      {faq.answer}
+                    </div>
                   )}
                 </div>
-                <p className="mt-1 text-xs text-zinc-600">{plan.blurb}</p>
-                <ul className="mt-4 flex-1 space-y-2">
-                  {plan.points.map((point) => (
-                    <li key={point} className="flex gap-2 text-xs text-zinc-600">
-                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to="/tenant/register"
-                  className={`mt-5 inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition ${
-                    plan.highlight
-                      ? 'bg-brand-500 text-white hover:bg-brand-600'
-                      : 'border border-zinc-300 bg-white text-zinc-800 hover:bg-zinc-50'
-                  }`}
-                >
-                  {plan.cta} <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-            ))}
+              );
+            })}
           </div>
-        </Section>
-      </div>
-
-      {/* FAQ */}
-      <Section eyebrow="FAQ" title="Questions people ask first">
-        <div className="mx-auto mt-10 max-w-3xl divide-y divide-zinc-200 overflow-hidden rounded-2xl border border-zinc-200 bg-white">
-          {FAQS.map((faq, index) => {
-            const open = openFaq === index;
-            return (
-              <div key={faq.q}>
-                <button
-                  type="button"
-                  onClick={() => setOpenFaq(open ? -1 : index)}
-                  aria-expanded={open}
-                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
-                >
-                  <span className="text-sm font-semibold text-zinc-900">{faq.q}</span>
-                  <ChevronDown className={`h-4 w-4 shrink-0 text-zinc-400 transition ${open ? 'rotate-180' : ''}`} />
-                </button>
-                {open && <p className="px-5 pb-4 text-sm leading-relaxed text-zinc-600">{faq.a}</p>}
-              </div>
-            );
-          })}
         </div>
-      </Section>
+      </section>
 
-      {/* Final CTA */}
-      <section className="bg-zinc-900">
-        <div className="mx-auto max-w-6xl px-4 py-16 text-center">
-          <GraduationCap className="mx-auto h-8 w-8 text-brand-400" />
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Automate the gate. 🐼
+      {/* ========================================================================= */}
+      {/* 7. FINAL CALL TO ACTION BANNER */}
+      {/* ========================================================================= */}
+      <section className="py-20 bg-gradient-to-tr from-brand-600 via-orange-600 to-amber-600 text-white relative overflow-hidden">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 text-center space-y-6 relative z-10">
+          <span className="text-4xl">🐼</span>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight font-display text-white">
+            Ready to automate your next college festival or event?
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-zinc-400">
-            Set up an event, share one link, and let the platform handle payments, tickets and entry.
+          <p className="mx-auto max-w-2xl text-sm sm:text-base text-white/90 leading-relaxed">
+            Join forward-thinking colleges and event teams. Create your organizer portal today and start issuing verified digital passes in under 10 minutes.
           </p>
-          <div className="mt-7 flex flex-wrap justify-center gap-3">
+
+          <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3.5">
             <Link
               to="/tenant/register"
-              className="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600"
+              className="inline-flex items-center gap-2 rounded-2xl bg-zinc-950 px-8 py-3.5 text-sm font-bold text-white shadow-xl hover:bg-zinc-900 active:scale-95 transition"
             >
-              Create an organizer account <ArrowRight className="h-4 w-4" />
+              <span>Get Started as Organizer</span>
+              <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              to="/tenant/login"
-              className="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-5 py-2.5 text-sm font-semibold text-zinc-200 transition hover:bg-zinc-800"
+              to="/events"
+              className="inline-flex items-center gap-2 rounded-2xl bg-white/20 backdrop-blur-md px-8 py-3.5 text-sm font-bold text-white border border-white/30 hover:bg-white/30 transition"
             >
-              <Lock className="h-4 w-4" /> Sign in
+              Explore Public Events
             </Link>
           </div>
-          <p className="mt-6 text-xs text-zinc-500">
-            <Mail className="mr-1 inline h-3.5 w-3.5" />
-            Attendees keep tickets in{' '}
-            <Link to="/my-tickets" className="font-semibold text-brand-400 hover:underline">
-              My Tickets
-            </Link>{' '}
-            — verified with a one-time code, no password needed.
-          </p>
         </div>
       </section>
     </div>

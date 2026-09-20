@@ -2,16 +2,24 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Search } from 'lucide-react';
+import { Search, Building2, ExternalLink, ShieldCheck, ShieldAlert } from 'lucide-react';
 import api, { apiErrorMessage } from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
 import Table, { Td } from '../shared/components/Table.jsx';
 import Pagination from '../shared/components/Pagination.jsx';
+import Input from '../shared/components/Input.jsx';
+import Button from '../shared/components/Button.jsx';
 import { PageLoader, EmptyState } from '../shared/components/Feedback.jsx';
 import { StatusBadge } from '../shared/components/Badge.jsx';
 import { formatDate } from '../shared/utils/format.js';
 
-const STATUSES = ['', 'PENDING_VERIFICATION', 'ACTIVE', 'SUSPENDED', 'INACTIVE'];
+const STATUSES = [
+  { value: '', label: 'All Tenants' },
+  { value: 'ACTIVE', label: 'Active' },
+  { value: 'PENDING_VERIFICATION', label: 'Pending Verification' },
+  { value: 'SUSPENDED', label: 'Suspended' },
+  { value: 'INACTIVE', label: 'Inactive' },
+];
 
 export default function TenantsPage() {
   const queryClient = useQueryClient();
@@ -35,66 +43,91 @@ export default function TenantsPage() {
   });
 
   return (
-    <div>
-      <PageHeader title="Tenants" description="Every organization on the platform." />
+    <div className="space-y-6">
+      <PageHeader
+        title="College Tenants"
+        description="All registered institutions, festival accounts, and their platform subscription status."
+      />
 
-      <div className="mb-4 flex flex-wrap gap-3">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-          <input
-            className="input w-64 pl-9"
-            placeholder="Search name, slug or email…"
+      {/* Search & Filter */}
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm border border-slate-200/90">
+        <div className="w-full sm:w-80">
+          <Input
+            icon={Search}
+            placeholder="Search by college name, slug, or email…"
             value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
+            onChange={(e) => {
+              setSearch(e.target.value);
               setPage(1);
             }}
+            size="sm"
           />
         </div>
-        <select
-          className="input w-52"
-          value={status}
-          onChange={(event) => {
-            setStatus(event.target.value);
-            setPage(1);
-          }}
-        >
-          {STATUSES.map((value) => (
-            <option key={value || 'all'} value={value}>
-              {value ? value.replace(/_/g, ' ') : 'All statuses'}
-            </option>
+
+        <div className="flex flex-wrap gap-1.5">
+          {STATUSES.map((item) => (
+            <button
+              key={item.value}
+              onClick={() => {
+                setStatus(item.value);
+                setPage(1);
+              }}
+              className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
+                status === item.value
+                  ? 'bg-purple-900 text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              {item.label}
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
       {isLoading ? (
-        <PageLoader label="Loading tenants…" />
+        <PageLoader label="Fetching registered tenants…" />
       ) : !data?.rows.length ? (
-        <EmptyState title="No tenants found" />
+        <EmptyState title="No tenants found" description="Try adjusting your search query or status filter." />
       ) : (
-        <div className="card overflow-hidden">
-          <Table columns={['Tenant', 'Plan', 'Events', 'Members', 'Joined', 'Status', 'Actions']}>
+        <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-card">
+          <Table columns={['College / Tenant', 'Plan', 'Events', 'Team Size', 'Joined', 'Status', 'Actions']}>
             {data.rows.map((tenant) => (
-              <tr key={tenant.id}>
+              <tr key={tenant.id} className="hover:bg-slate-50/80 transition-colors">
                 <Td>
-                  <Link to={`/platform/tenants/${tenant.id}`} className="font-medium text-zinc-800 hover:text-brand-600">
-                    {tenant.name}
-                  </Link>
-                  <span className="block font-mono text-xs text-zinc-500">/{tenant.slug}</span>
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 text-xs font-bold text-purple-700 shrink-0">
+                      {tenant.name.charAt(0)}
+                    </div>
+                    <div className="min-w-0">
+                      <Link
+                        to={`/platform/tenants/${tenant.id}`}
+                        className="font-bold text-xs sm:text-sm text-slate-900 hover:text-purple-600 transition-colors truncate block"
+                      >
+                        {tenant.name}
+                      </Link>
+                      <span className="font-mono text-[10px] text-slate-400">/{tenant.slug}</span>
+                    </div>
+                  </div>
                 </Td>
-                <Td className="text-xs text-zinc-500">{tenant.subscriptionPlan}</Td>
-                <Td>{tenant.eventCount}</Td>
-                <Td>{tenant.memberCount}</Td>
-                <Td className="whitespace-nowrap text-xs text-zinc-500">{formatDate(tenant.createdAt)}</Td>
+                <Td className="text-xs font-bold text-slate-600">{tenant.subscriptionPlan}</Td>
+                <Td className="text-xs font-bold text-slate-900">{tenant.eventCount}</Td>
+                <Td className="text-xs text-slate-600">{tenant.memberCount} members</Td>
+                <Td className="whitespace-nowrap text-xs text-slate-500">{formatDate(tenant.createdAt)}</Td>
                 <Td>
-                  <StatusBadge status={tenant.status} />
+                  <StatusBadge status={tenant.status} size="xs" />
                 </Td>
-                <Td>
-                  <div className="flex gap-2">
+                <Td className="whitespace-nowrap text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    <Link
+                      to={`/platform/tenants/${tenant.id}`}
+                      className="rounded-lg bg-slate-100 hover:bg-slate-200 px-2.5 py-1 text-xs font-bold text-slate-700 transition-all"
+                    >
+                      Manage
+                    </Link>
                     {tenant.status !== 'ACTIVE' && (
                       <button
                         onClick={() => changeStatus.mutate({ id: tenant.id, next: 'ACTIVE' })}
-                        className="text-xs font-semibold text-emerald-600 hover:underline"
+                        className="rounded-lg bg-emerald-50 border border-emerald-200 px-2 py-1 text-xs font-bold text-emerald-700 hover:bg-emerald-100 transition-all"
                       >
                         Activate
                       </button>
@@ -102,7 +135,7 @@ export default function TenantsPage() {
                     {tenant.status === 'ACTIVE' && (
                       <button
                         onClick={() => changeStatus.mutate({ id: tenant.id, next: 'SUSPENDED' })}
-                        className="text-xs font-semibold text-red-600 hover:underline"
+                        className="rounded-lg bg-red-50 border border-red-200 px-2 py-1 text-xs font-bold text-red-700 hover:bg-red-100 transition-all"
                       >
                         Suspend
                       </button>
@@ -112,7 +145,9 @@ export default function TenantsPage() {
               </tr>
             ))}
           </Table>
-          <Pagination pagination={data.pagination} onPageChange={setPage} />
+          <div className="border-t border-slate-100 p-4">
+            <Pagination pagination={data.pagination} onPageChange={setPage} />
+          </div>
         </div>
       )}
     </div>

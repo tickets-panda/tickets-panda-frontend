@@ -14,6 +14,17 @@ import ConfirmationPage from './public/ConfirmationPage.jsx';
 import MyTicketsPage from './public/MyTicketsPage.jsx';
 import VerifyTicketPage from './public/VerifyTicketPage.jsx';
 import LocalCheckoutPage from './public/LocalCheckoutPage.jsx';
+import PublicEventsDirectoryPage from './public/PublicEventsDirectoryPage.jsx';
+import {
+  FeaturesPage,
+  HowItWorksPage,
+  ForCollegesPage,
+  ForOrganizersPage,
+  HelpCenterPage,
+  ContactPage,
+  PrivacyPolicyPage,
+  TermsOfServicePage,
+} from './public/MarketingPages.jsx';
 
 // Tenant dashboard
 import TenantLayout from './tenant/TenantLayout.jsx';
@@ -93,9 +104,19 @@ export default function App() {
 
   return (
     <Routes>
-      {/* Customer-facing */}
+      {/* Customer-facing & Marketing */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/how-it-works" element={<HowItWorksPage />} />
+        <Route path="/for-colleges" element={<ForCollegesPage />} />
+        <Route path="/for-organizers" element={<ForOrganizersPage />} />
+        <Route path="/events" element={<PublicEventsDirectoryPage />} />
+        <Route path="/help" element={<HelpCenterPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsOfServicePage />} />
+
         <Route path="/t/:tenantSlug" element={<TenantEventsPage />} />
         <Route path="/t/:tenantSlug/events/:eventSlug" element={<EventDetailPage />} />
         <Route path="/t/:tenantSlug/events/:eventSlug/register" element={<RegisterPage />} />

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Users, Shield, Mail, Phone } from 'lucide-react';
 import api, { apiErrorMessage } from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
 import Card from '../shared/components/Card.jsx';
@@ -13,10 +13,10 @@ import { StatusBadge } from '../shared/components/Badge.jsx';
 import { formatDateTime } from '../shared/utils/format.js';
 
 const ROLES = [
-  { value: 'TENANT_ADMIN', label: 'Admin — full access' },
-  { value: 'EVENT_MANAGER', label: 'Event manager — assigned events' },
-  { value: 'FINANCE_VIEWER', label: 'Finance viewer — read-only' },
-  { value: 'CHECKIN_STAFF', label: 'Check-in staff — gate only' },
+  { value: 'TENANT_ADMIN', label: 'Admin — Full college access' },
+  { value: 'EVENT_MANAGER', label: 'Event Manager — Manage festivals & competitions' },
+  { value: 'FINANCE_VIEWER', label: 'Finance Viewer — Orders & revenue read-only' },
+  { value: 'CHECKIN_STAFF', label: 'Gate Staff — QR scanner entry verification' },
 ];
 
 export default function StaffPage() {
@@ -33,7 +33,7 @@ export default function StaffPage() {
   const addMember = useMutation({
     mutationFn: async (payload) => api.post('/tenant/members', payload),
     onSuccess: () => {
-      toast.success('Team member added');
+      toast.success('Team member invited successfully');
       setForm({ name: '', email: '', phone: '', role: 'CHECKIN_STAFF' });
       invalidate();
     },
@@ -43,47 +43,63 @@ export default function StaffPage() {
   const removeMember = useMutation({
     mutationFn: async (memberId) => api.delete(`/tenant/members/${memberId}`),
     onSuccess: () => {
-      toast.success('Team member removed');
+      toast.success('Member removed');
       invalidate();
     },
     onError: (error) => toast.error(apiErrorMessage(error)),
   });
 
-  const submit = (event) => {
-    event.preventDefault();
-    if (!form.name || !form.email) return toast.error('Name and email are required');
-    return addMember.mutate({ ...form, phone: form.phone || null });
+  const submit = (e) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim()) {
+      return toast.error('Name and email are required');
+    }
+    return addMember.mutate({ ...form, phone: form.phone.trim() || null });
   };
 
   return (
-    <div>
-      <PageHeader title="Staff & team" description="Control who can manage events and scan tickets." />
+    <div className="space-y-6">
+      <PageHeader
+        title="Staff & Gate Volunteers"
+        description="Assign event organizers, coordinators, and gate volunteers for ticket check-in."
+      />
 
       {isLoading ? (
-        <PageLoader label="Loading team…" />
+        <PageLoader label="Loading team roster…" />
       ) : !data?.length ? (
-        <EmptyState title="No team members" description="Add gate staff so they can scan tickets." />
+        <EmptyState title="No team members" description="Add volunteers or staff so they can scan tickets at gates." />
       ) : (
-        <div className="card overflow-hidden">
-          <Table columns={['Member', 'Role', 'Status', 'Last login', '']}>
+        <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-card">
+          <Table columns={['Staff Member', 'Assigned Role', 'Access Status', 'Last Activity', 'Actions']}>
             {data.map((member) => (
-              <tr key={member.id}>
+              <tr key={member.id} className="hover:bg-slate-50/80 transition-colors">
                 <Td>
-                  <span className="font-medium text-zinc-800">{member.user?.name}</span>
-                  <span className="block text-xs text-zinc-500">{member.user?.email}</span>
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-100 text-xs font-bold text-brand-700">
+                      {member.user?.name?.charAt(0) || 'U'}
+                    </div>
+                    <div>
+                      <p className="font-bold text-xs text-slate-900">{member.user?.name}</p>
+                      <p className="text-[11px] text-slate-500">{member.user?.email}</p>
+                    </div>
+                  </div>
                 </Td>
-                <Td className="text-zinc-600">{member.role.replace(/_/g, ' ')}</Td>
                 <Td>
-                  <StatusBadge status={member.isActive ? 'ACTIVE' : 'INACTIVE'} />
+                  <span className="inline-flex rounded-lg bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-700">
+                    {member.role?.replace(/_/g, ' ')}
+                  </span>
                 </Td>
-                <Td className="whitespace-nowrap text-xs text-zinc-500">
-                  {member.user?.lastLoginAt ? formatDateTime(member.user.lastLoginAt) : 'Never'}
+                <Td>
+                  <StatusBadge status={member.isActive ? 'ACTIVE' : 'INACTIVE'} size="xs" />
+                </Td>
+                <Td className="whitespace-nowrap text-xs text-slate-500 font-mono">
+                  {member.user?.lastLoginAt ? formatDateTime(member.user.lastLoginAt) : 'Never logged in'}
                 </Td>
                 <Td className="text-right">
                   {member.role !== 'TENANT_OWNER' && (
                     <button
                       onClick={() => removeMember.mutate(member.id)}
-                      className="text-red-600 hover:underline"
+                      className="rounded-lg p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                       aria-label={`Remove ${member.user?.name}`}
                     >
                       <Trash2 className="h-4 w-4" />
@@ -96,12 +112,35 @@ export default function StaffPage() {
         </div>
       )}
 
-      <Card className="mt-6" title="Add a team member">
+      {/* Add New Team Member Card */}
+      <Card title="Add New Organizer or Gate Volunteer" subtitle="Send an invite to join your organization studio">
         <form onSubmit={submit} className="grid gap-3 sm:grid-cols-5">
-          <Input label="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Gate Staff" />
-          <Input label="Email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="staff@example.com" />
-          <Input label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-          <Select label="Role" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
+          <Input
+            label="Full Name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            placeholder="e.g. Rahul Sharma"
+            required
+          />
+          <Input
+            label="Email Address"
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            placeholder="rahul@college.edu"
+            required
+          />
+          <Input
+            label="Phone Number"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            placeholder="+91 98765 43210"
+          />
+          <Select
+            label="Role & Access"
+            value={form.role}
+            onChange={(e) => setForm({ ...form, role: e.target.value })}
+          >
             {ROLES.map((role) => (
               <option key={role.value} value={role.value}>
                 {role.label}
@@ -109,13 +148,13 @@ export default function StaffPage() {
             ))}
           </Select>
           <div className="flex items-end">
-            <Button type="submit" className="w-full" loading={addMember.isPending}>
-              <Plus className="h-4 w-4" /> Add
+            <Button type="submit" className="w-full" loading={addMember.isPending} leftIcon={Plus}>
+              Invite Member
             </Button>
           </div>
         </form>
-        <p className="mt-3 text-xs text-zinc-500">
-          New members sign in with this email and use “Forgot password” to set their own password.
+        <p className="mt-3 text-xs text-slate-500">
+          New volunteers will sign in with this email and set their password via the “Forgot password” link.
         </p>
       </Card>
     </div>
