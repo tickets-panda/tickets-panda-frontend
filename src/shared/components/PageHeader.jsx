@@ -1,0 +1,12 @@
+export default function PageHeader({ title, description, actions, children }) {
+  return (
+    <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h1 className="text-xl font-bold text-zinc-900">{title}</h1>
+        {description && <p className="mt-1 text-sm text-zinc-500">{description}</p>}
+        {children}
+      </div>
+      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+    </div>
+  );
+}
