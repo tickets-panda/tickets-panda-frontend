@@ -16,6 +16,8 @@ import MyTicketsPage from './public/MyTicketsPage.jsx';
 import VerifyTicketPage from './public/VerifyTicketPage.jsx';
 import LocalCheckoutPage from './public/LocalCheckoutPage.jsx';
 import PublicEventsDirectoryPage from './public/PublicEventsDirectoryPage.jsx';
+import NehruHome from './public/nehru/NehruHome.jsx';
+import NehruEvent from './public/nehru/NehruEvent.jsx';
 import {
   FeaturesPage,
   HowItWorksPage,
@@ -119,6 +121,8 @@ export default function App() {
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path="/terms" element={<TermsOfServicePage />} />
 
+        <Route path="/t/nehru-college" element={<NehruHome />} />
+        <Route path="/t/nehru-college/events/:eventSlug" element={<NehruEvent />} />
         <Route path="/t/:tenantSlug" element={<TenantEventsPage />} />
         <Route path="/t/:tenantSlug/events/:eventSlug" element={<EventDetailPage />} />
         <Route path="/t/:tenantSlug/events/:eventSlug/register" element={<RegisterPage />} />
