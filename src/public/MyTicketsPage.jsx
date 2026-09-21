@@ -27,7 +27,7 @@ import Tabs from '../shared/components/Tabs.jsx';
 import { EmptyState, PageLoader } from '../shared/components/Feedback.jsx';
 import { StatusBadge } from '../shared/components/Badge.jsx';
 import TicketCard from '../shared/components/TicketCard.jsx';
-import { RevealGroup } from '../shared/components/Reveal.jsx';
+import Reveal, { RevealGroup } from '../shared/components/Reveal.jsx';
 import { formatDate, formatTime } from '../shared/utils/format.js';
 
 export default function MyTicketsPage() {
@@ -133,7 +133,7 @@ export default function MyTicketsPage() {
 
         {/* Authentication Form Card (when not logged in) */}
         {stage !== 'tickets' && (
-          <div className="mx-auto max-w-md">
+          <Reveal className="mx-auto max-w-md">
             <Card className="p-6 sm:p-8 shadow-card border-slate-200/90">
               <div className="text-center mb-6">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 border border-brand-100">
@@ -245,7 +245,7 @@ export default function MyTicketsPage() {
                 with your transaction reference.
               </p>
             </div>
-          </div>
+          </Reveal>
         )}
 
         {/* Authenticated Tickets View */}

@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { ArrowLeft, Building2, Ticket, CreditCard, CalendarDays, ExternalLink, Globe, Phone, Mail } from 'lucide-react';
 import api, { apiErrorMessage } from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import Card from '../shared/components/Card.jsx';
 import Stat from '../shared/components/Stat.jsx';
 import Table, { Td } from '../shared/components/Table.jsx';
@@ -38,7 +39,7 @@ export default function TenantDetailPage() {
   const { tenant, stats } = data;
 
   return (
-    <div className="space-y-6">
+    <RevealGroup className="space-y-6">
       <button
         onClick={() => navigate('/platform/tenants')}
         className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors"
@@ -149,6 +150,6 @@ export default function TenantDetailPage() {
           )}
         </Card>
       </div>
-    </div>
+    </RevealGroup>
   );
 }

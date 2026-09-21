@@ -21,7 +21,7 @@ import Card from '../shared/components/Card.jsx';
 import Button from '../shared/components/Button.jsx';
 import { StatusBadge } from '../shared/components/Badge.jsx';
 import TicketCard from '../shared/components/TicketCard.jsx';
-import { RevealGroup } from '../shared/components/Reveal.jsx';
+import Reveal, { RevealGroup } from '../shared/components/Reveal.jsx';
 import { formatCurrency, formatDate, formatTime } from '../shared/utils/format.js';
 
 export default function ConfirmationPage() {
@@ -72,7 +72,7 @@ export default function ConfirmationPage() {
     <div className="min-h-screen bg-slate-50/60 pb-20 pt-6">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
         {/* Top Success Hero Banner */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-brand-950 p-6 sm:p-8 text-white shadow-xl">
+        <Reveal className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-brand-950 p-6 sm:p-8 text-white shadow-xl">
           <div className="absolute -right-12 -top-12 h-64 w-64 rounded-full bg-brand-500/20 blur-3xl" />
           <div className="absolute -left-12 -bottom-12 h-64 w-64 rounded-full bg-emerald-500/20 blur-3xl" />
 
@@ -132,7 +132,7 @@ export default function ConfirmationPage() {
               </button>
             </div>
           </div>
-        </div>
+        </Reveal>
 
         {/* Order Details & Event Overview Cards */}
         <div className="mt-8 grid gap-6 md:grid-cols-3">

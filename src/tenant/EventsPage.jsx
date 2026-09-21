@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import api from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import Table, { Td } from '../shared/components/Table.jsx';
 import Pagination from '../shared/components/Pagination.jsx';
 import Button from '../shared/components/Button.jsx';
@@ -43,7 +44,7 @@ export default function EventsPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <RevealGroup className="space-y-6">
       <PageHeader
         title="Events & Festivals"
         description="Publish college festivals, cultural nights, tech hackathons, and departmental symposiums."
@@ -178,6 +179,6 @@ export default function EventsPage() {
           </div>
         </div>
       )}
-    </div>
+    </RevealGroup>
   );
 }

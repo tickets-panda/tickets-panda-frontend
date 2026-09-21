@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import api from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import Table, { Td } from '../shared/components/Table.jsx';
 import Pagination from '../shared/components/Pagination.jsx';
 import { PageLoader, EmptyState } from '../shared/components/Feedback.jsx';
@@ -22,7 +23,7 @@ export function PlatformBookingsPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <RevealGroup className="space-y-6">
       <PageHeader title="Cross-Tenant Orders" description="All attendee ticket registrations across the platform." />
 
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm border border-slate-200/90">
@@ -86,7 +87,7 @@ export function PlatformBookingsPage() {
           </div>
         </div>
       )}
-    </div>
+    </RevealGroup>
   );
 }
 
@@ -100,7 +101,7 @@ export function PlatformPaymentsPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <RevealGroup className="space-y-6">
       <PageHeader title="Gateway Transactions" description="Payment ledger and settlement records across all college portals." />
 
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm border border-slate-200/90">
@@ -159,7 +160,7 @@ export function PlatformPaymentsPage() {
           </div>
         </div>
       )}
-    </div>
+    </RevealGroup>
   );
 }
 

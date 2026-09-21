@@ -5,6 +5,7 @@ import { Mail, Key, ArrowLeft, ShieldCheck } from 'lucide-react';
 import api, { apiErrorMessage } from '../shared/api/client.js';
 import Input from '../shared/components/Input.jsx';
 import Button from '../shared/components/Button.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 
 export function ForgotPasswordPage() {
   const { register, handleSubmit, formState } = useForm({ defaultValues: { email: '' } });
@@ -20,6 +21,7 @@ export function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/70 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <RevealGroup className="flex flex-col">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <Link to="/" className="inline-flex items-center gap-2.5">
           <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500 text-2xl shadow-lg shadow-brand-500/25">
@@ -67,6 +69,7 @@ export function ForgotPasswordPage() {
           </div>
         </div>
       </div>
+      </RevealGroup>
     </div>
   );
 }
@@ -92,6 +95,7 @@ export function ResetPasswordPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/70 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <RevealGroup className="flex flex-col">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <Link to="/" className="inline-flex items-center gap-2.5">
           <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500 text-2xl shadow-lg shadow-brand-500/25">
@@ -151,6 +155,7 @@ export function ResetPasswordPage() {
           </div>
         </div>
       </div>
+      </RevealGroup>
     </div>
   );
 }

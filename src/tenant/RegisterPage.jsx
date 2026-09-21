@@ -5,6 +5,7 @@ import { Building2, Mail, Key, Phone, Globe, Sparkles, ArrowRight } from 'lucide
 import api, { apiErrorMessage, apiFieldErrors } from '../shared/api/client.js';
 import Input from '../shared/components/Input.jsx';
 import Button from '../shared/components/Button.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 
 export default function RegisterPage() {
   const { register, handleSubmit, setError, formState, watch } = useForm({
@@ -34,6 +35,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/70 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <RevealGroup className="flex flex-col">
       <div className="sm:mx-auto sm:w-full sm:max-w-lg text-center">
         <Link to="/" className="inline-flex items-center gap-2.5">
           <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500 text-2xl shadow-lg shadow-brand-500/25">
@@ -137,6 +139,7 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
+      </RevealGroup>
     </div>
   );
 }

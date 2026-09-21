@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { Search, Building2, ExternalLink, ShieldCheck, ShieldAlert } from 'lucide-react';
 import api, { apiErrorMessage } from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import Table, { Td } from '../shared/components/Table.jsx';
 import Pagination from '../shared/components/Pagination.jsx';
 import Input from '../shared/components/Input.jsx';
@@ -43,7 +44,7 @@ export default function TenantsPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <RevealGroup className="space-y-6">
       <PageHeader
         title="College Tenants"
         description="All registered institutions, festival accounts, and their platform subscription status."
@@ -150,6 +151,6 @@ export default function TenantsPage() {
           </div>
         </div>
       )}
-    </div>
+    </RevealGroup>
   );
 }

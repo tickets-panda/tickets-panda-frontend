@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ScanLine, Ticket, Clock, CheckCircle2, Radio, Activity } from 'lucide-react';
 import api from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import Card from '../shared/components/Card.jsx';
 import Stat from '../shared/components/Stat.jsx';
 import Table, { Td } from '../shared/components/Table.jsx';
@@ -26,7 +27,7 @@ export default function GateStatsPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <RevealGroup className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <PageHeader
           title="Gate Check-In Telemetry"
@@ -142,6 +143,6 @@ export default function GateStatsPage() {
           </div>
         </>
       ) : null}
-    </div>
+    </RevealGroup>
   );
 }

@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { ExternalLink, Copy, Building2, Globe, Phone, MapPin, Image as ImageIcon } from 'lucide-react';
 import api, { apiErrorMessage } from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import Card from '../shared/components/Card.jsx';
 import Input, { Textarea } from '../shared/components/Input.jsx';
 import Button from '../shared/components/Button.jsx';
@@ -53,7 +54,7 @@ export default function ProfilePage() {
   if (isLoading) return <PageLoader label="Loading organization details…" />;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <RevealGroup className="mx-auto max-w-3xl space-y-6">
       <PageHeader
         title="College Organization Profile"
         description="Configure your institution's identity, public festival landing page, and contact details."
@@ -155,6 +156,6 @@ export default function ProfilePage() {
           </Button>
         </div>
       </form>
-    </div>
+    </RevealGroup>
   );
 }

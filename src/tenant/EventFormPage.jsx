@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import api, { apiErrorMessage, apiFieldErrors } from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import Input, { Textarea } from '../shared/components/Input.jsx';
 import Button from '../shared/components/Button.jsx';
 import Card from '../shared/components/Card.jsx';
@@ -79,7 +80,7 @@ export default function EventFormPage() {
   if (isEdit && isLoading) return <PageLoader label="Loading event configuration…" />;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <RevealGroup className="mx-auto max-w-3xl space-y-6">
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
@@ -211,6 +212,6 @@ export default function EventFormPage() {
           </Button>
         </div>
       </form>
-    </div>
+    </RevealGroup>
   );
 }
