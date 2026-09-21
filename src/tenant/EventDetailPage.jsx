@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import api, { apiErrorMessage } from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import Card from '../shared/components/Card.jsx';
 import Button from '../shared/components/Button.jsx';
 import Input, { Select } from '../shared/components/Input.jsx';
@@ -33,6 +34,7 @@ import Stat from '../shared/components/Stat.jsx';
 import { PageLoader, EmptyState } from '../shared/components/Feedback.jsx';
 import { StatusBadge } from '../shared/components/Badge.jsx';
 import { formatCurrency, formatDate, formatTime } from '../shared/utils/format.js';
+import { rowsToCsv, downloadCsv, registrationsToRows } from '../shared/utils/csv.js';
 import { TICKET_TYPE_OPTIONS, CHOICE_FIELD_TYPES } from '../shared/utils/constants.js';
 import { useAuthStore } from '../shared/store/auth.js';
 
@@ -41,6 +43,7 @@ export default function EventDetailPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('overview');
+  const [exportingAct, setExportingAct] = useState(null);
 
   const [ticketType, setTicketType] = useState({
     name: '',
@@ -77,6 +80,33 @@ export default function EventDetailPage() {
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ['tenant-event', id] });
     queryClient.invalidateQueries({ queryKey: ['tenant-events'] });
+  };
+
+  const exportActivityCsv = async (act) => {
+    setExportingAct(act.id);
+    try {
+      const all = [];
+      let next = 1;
+      for (let i = 0; i < 10; i += 1) {
+        const res = await api.get('/tenant/registrations', {
+          params: { page: next, limit: 100, eventId: id, activityId: act.id },
+        });
+        const batch = res.data.data.rows || [];
+        all.push(...batch);
+        const pagination = res.data.data.pagination;
+        if (!pagination || next >= (pagination.totalPages || 1) || batch.length === 0) break;
+        next += 1;
+      }
+      if (!all.length) return toast.error(`No registrations for ${act.title} yet`);
+      const { columns, rows } = registrationsToRows(all);
+      const safe = act.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      downloadCsv(`${safe}-students`, rowsToCsv(columns, rows));
+      toast.success(`Exported ${all.length} student(s) from ${act.title}`);
+    } catch (error) {
+      toast.error(apiErrorMessage(error));
+    } finally {
+      setExportingAct(null);
+    }
   };
 
   const setStatus = useMutation({
@@ -224,7 +254,7 @@ export default function EventDetailPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <RevealGroup className="space-y-6">
       {/* Top Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -452,6 +482,15 @@ export default function EventDetailPage() {
                     </Td>
                     <Td className="text-right">
                       <div className="flex items-center justify-end gap-3">
+                        <button
+                          type="button"
+                          disabled={exportingAct === act.id}
+                          onClick={() => exportActivityCsv(act)}
+                          className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:underline disabled:opacity-50"
+                          title={`Download ${act.title} student list (CSV)`}
+                        >
+                          {exportingAct === act.id ? 'Exporting…' : 'Download CSV'}
+                        </button>
                         <button
                           type="button"
                           onClick={() =>
@@ -762,6 +801,6 @@ export default function EventDetailPage() {
           </Card>
         </div>
       )}
-    </div>
+    </RevealGroup>
   );
 }

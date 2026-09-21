@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Plus, Trash2, Users, Shield, Mail, Phone } from 'lucide-react';
+import { Plus, Trash2, Users, Shield, Mail, Phone, UserCheck, UserX } from 'lucide-react';
 import api, { apiErrorMessage } from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import Card from '../shared/components/Card.jsx';
 import Table, { Td } from '../shared/components/Table.jsx';
 import Button from '../shared/components/Button.jsx';
@@ -49,6 +50,15 @@ export default function StaffPage() {
     onError: (error) => toast.error(apiErrorMessage(error)),
   });
 
+  const toggleAccess = useMutation({
+    mutationFn: async (member) => api.put(`/tenant/members/${member.id}`, { isActive: !member.isActive }),
+    onSuccess: (_, member) => {
+      toast.success(member.isActive ? 'Access suspended' : 'Access approved');
+      invalidate();
+    },
+    onError: (error) => toast.error(apiErrorMessage(error)),
+  });
+
   const submit = (e) => {
     e.preventDefault();
     if (!form.name.trim() || !form.email.trim()) {
@@ -58,7 +68,7 @@ export default function StaffPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <RevealGroup className="space-y-6">
       <PageHeader
         title="Staff & Gate Volunteers"
         description="Assign event organizers, coordinators, and gate volunteers for ticket check-in."
@@ -97,13 +107,27 @@ export default function StaffPage() {
                 </Td>
                 <Td className="text-right">
                   {member.role !== 'TENANT_OWNER' && (
-                    <button
-                      onClick={() => removeMember.mutate(member.id)}
-                      className="rounded-lg p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                      aria-label={`Remove ${member.user?.name}`}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    <div className="flex items-center justify-end gap-1">
+                      <button
+                        onClick={() => toggleAccess.mutate(member)}
+                        className={`rounded-lg p-1.5 transition-colors ${
+                          member.isActive
+                            ? 'text-slate-400 hover:text-amber-600 hover:bg-amber-50'
+                            : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50'
+                        }`}
+                        aria-label={member.isActive ? `Suspend ${member.user?.name}` : `Approve ${member.user?.name}`}
+                        title={member.isActive ? 'Suspend access' : 'Approve access'}
+                      >
+                        {member.isActive ? <UserX className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
+                      </button>
+                      <button
+                        onClick={() => removeMember.mutate(member.id)}
+                        className="rounded-lg p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        aria-label={`Remove ${member.user?.name}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   )}
                 </Td>
               </tr>
@@ -157,6 +181,6 @@ export default function StaffPage() {
           New volunteers will sign in with this email and set their password via the “Forgot password” link.
         </p>
       </Card>
-    </div>
+    </RevealGroup>
   );
 }

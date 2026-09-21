@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import api, { apiErrorMessage } from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import Card from '../shared/components/Card.jsx';
 import Button from '../shared/components/Button.jsx';
 import Input, { Select } from '../shared/components/Input.jsx';
@@ -216,7 +217,7 @@ export default function ScannerPage() {
   const validScansCount = scanHistory.filter((h) => h.status === 'CHECKED_IN' || h.status === 'VALID').length;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <RevealGroup className="mx-auto max-w-3xl space-y-6">
       {/* Top Header with Sound & Settings Controls */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -451,6 +452,6 @@ export default function ScannerPage() {
           </div>
         </Card>
       )}
-    </div>
+    </RevealGroup>
   );
 }

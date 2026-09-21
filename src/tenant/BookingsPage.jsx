@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 import { Search, Ticket, Calendar, Download, Filter } from 'lucide-react';
-import api from '../shared/api/client.js';
+import api, { apiErrorMessage } from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
+import { RevealGroup } from '../shared/components/Reveal.jsx';
 import Table, { Td } from '../shared/components/Table.jsx';
 import Pagination from '../shared/components/Pagination.jsx';
 import Input from '../shared/components/Input.jsx';
 import { PageLoader, EmptyState } from '../shared/components/Feedback.jsx';
 import { StatusBadge } from '../shared/components/Badge.jsx';
 import { formatCurrency, formatDateTime } from '../shared/utils/format.js';
+import Button from '../shared/components/Button.jsx';
+import { rowsToCsv, downloadCsv, registrationsToRows } from '../shared/utils/csv.js';
 
 const STATUSES = [
   { value: '', label: 'All Orders' },
@@ -22,6 +26,7 @@ export default function BookingsPage() {
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
   const [search, setSearch] = useState('');
+  const [exporting, setExporting] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ['tenant-registrations', page, status, search],
@@ -29,8 +34,34 @@ export default function BookingsPage() {
       (await api.get('/tenant/registrations', { params: { page, limit: 15, status, search } })).data.data,
   });
 
+  const exportCsv = async () => {
+    setExporting(true);
+    try {
+      const all = [];
+      let next = 1;
+      for (let i = 0; i < 10; i += 1) {
+        const res = await api.get('/tenant/registrations', {
+          params: { page: next, limit: 100, status, search },
+        });
+        const batch = res.data.data.rows || [];
+        all.push(...batch);
+        const pagination = res.data.data.pagination;
+        if (!pagination || next >= (pagination.totalPages || 1) || batch.length === 0) break;
+        next += 1;
+      }
+      if (!all.length) return toast.error('Nothing to export for these filters');
+      const { columns, rows } = registrationsToRows(all);
+      downloadCsv(`bookings-${new Date().toISOString().slice(0, 10)}`, rowsToCsv(columns, rows));
+      toast.success(`Exported ${all.length} booking(s)`);
+    } catch (error) {
+      toast.error(apiErrorMessage(error));
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
-    <div className="space-y-6">
+    <RevealGroup className="space-y-6">
       <PageHeader
         title="Bookings & Orders"
         description="Every attendee ticket registration across your events and festival activities."
@@ -68,6 +99,9 @@ export default function BookingsPage() {
               {item.label}
             </button>
           ))}
+          <Button size="sm" variant="secondary" leftIcon={Download} loading={exporting} onClick={exportCsv}>
+            Export CSV
+          </Button>
         </div>
       </div>
 
@@ -124,6 +158,6 @@ export default function BookingsPage() {
           </div>
         </div>
       )}
-    </div>
+    </RevealGroup>
   );
 }
