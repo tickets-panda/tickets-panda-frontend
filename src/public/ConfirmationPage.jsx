@@ -242,7 +242,7 @@ export default function ConfirmationPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>Payment Channel</span>
-                  <span className="font-medium text-slate-700">Online Checkout (Local Sandbox)</span>
+                  <span className="font-medium text-slate-700">Online Checkout</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Reference ID</span>

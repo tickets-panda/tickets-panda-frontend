@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ScanLine, Ticket, Clock, CheckCircle2, Radio, Activity } from 'lucide-react';
+import { ScanLine, Ticket, Clock, CheckCircle2, Radio, Activity, Trophy } from 'lucide-react';
 import api from '../shared/api/client.js';
 import PageHeader from '../shared/components/PageHeader.jsx';
 import { RevealGroup } from '../shared/components/Reveal.jsx';
@@ -9,7 +9,7 @@ import Stat from '../shared/components/Stat.jsx';
 import Table, { Td } from '../shared/components/Table.jsx';
 import { Select } from '../shared/components/Input.jsx';
 import { PageLoader, EmptyState } from '../shared/components/Feedback.jsx';
-import { formatTime } from '../shared/utils/format.js';
+import { formatDateTime, formatTime } from '../shared/utils/format.js';
 
 export default function GateStatsPage() {
   const [eventId, setEventId] = useState('');
@@ -24,6 +24,11 @@ export default function GateStatsPage() {
     queryFn: async () => (await api.get(`/staff/event/${eventId}/gate-stats`)).data.data,
     enabled: Boolean(eventId),
     refetchInterval: 30_000,
+  });
+
+  const { data: staffStats } = useQuery({
+    queryKey: ['gate-staff-stats'],
+    queryFn: async () => (await api.get('/tenant/staff-stats')).data.data,
   });
 
   return (
@@ -92,6 +97,28 @@ export default function GateStatsPage() {
             <Stat label="Remaining Outside" value={data.remaining} tone="amber" icon={Clock} />
             <Stat label="Admittance %" value={`${data.percentEntered}%`} tone="purple" icon={Activity} />
           </div>
+
+          {staffStats?.staff?.length > 0 && (
+            <Card title="Top Gate Staff" subtitle="Admissions by scanner this festival">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {staffStats.staff.slice(0, 4).map((m, i) => (
+                  <div key={m.userId} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3">
+                    <div className="flex items-center gap-2.5">
+                      {i === 0 && <Trophy className="h-4 w-4 text-amber-500" />}
+                      <div>
+                        <p className="text-xs font-black text-slate-900">{m.name || m.email}</p>
+                        <p className="text-[11px] text-slate-500">{m.role?.replace(/_/g, ' ')}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-black text-emerald-700">{m.admitted} admitted</p>
+                      <p className="text-[11px] text-slate-400">{m.scans} total · {m.failed} failed</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
 
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Breakdown by Tier */}

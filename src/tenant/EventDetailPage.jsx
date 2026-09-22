@@ -195,7 +195,7 @@ export default function EventDetailPage() {
   const ticketTypes = event.ticketTypes || [];
   const formFields = event.formFields || [];
   const tenantSlug = useAuthStore.getState().user?.tenantSlug;
-  const publicUrl = `/t/${tenantSlug}/events/${event.slug}`;
+  const publicUrl = `/t/${tenantSlug}`;
 
   const copyPublicLink = () => {
     const fullUrl = `${window.location.origin}${publicUrl}`;
@@ -259,7 +259,7 @@ export default function EventDetailPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate('/tenant/events')}
+            onClick={() => navigate('/studio/events')}
             className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -298,7 +298,7 @@ export default function EventDetailPage() {
             </Button>
           )}
           <Link
-            to={`/tenant/events/${id}/edit`}
+            to={`/studio/events/${id}/edit`}
             className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all"
           >
             <Edit className="h-3.5 w-3.5" />
@@ -412,7 +412,7 @@ export default function EventDetailPage() {
                 </p>
               </div>
               <Link
-                to="/tenant/scanner"
+                to="/studio/scanner"
                 className="rounded-xl bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-sm transition-all"
               >
                 Launch Scanner Now

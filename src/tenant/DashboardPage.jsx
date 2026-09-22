@@ -58,13 +58,13 @@ export default function DashboardPage() {
 
         <div className="flex flex-wrap items-center gap-3">
           <Link
-            to="/tenant/scanner"
+            to="/studio/scanner"
             className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-lg shadow-emerald-500/25 transition-all"
           >
             <ScanLine className="h-4 w-4" /> Open Gate Scanner
           </Link>
           <Link
-            to="/tenant/events/new"
+            to="/studio/events/new"
             className="inline-flex items-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-lg shadow-brand-500/25 transition-all"
           >
             <Plus className="h-4 w-4" /> Create New Event
@@ -117,7 +117,7 @@ export default function DashboardPage() {
           title="Upcoming Festivals & Events"
           subtitle="Events scheduled for your college"
           action={
-            <Link to="/tenant/events" className="text-xs font-bold text-brand-600 hover:underline">
+            <Link to="/studio/events" className="text-xs font-bold text-brand-600 hover:underline">
               View All ↗
             </Link>
           }
@@ -129,7 +129,7 @@ export default function DashboardPage() {
                 <tr key={event.id} className="hover:bg-slate-50/80 transition-colors">
                   <Td>
                     <Link
-                      to={`/tenant/events/${event.id}`}
+                      to={`/studio/events/${event.id}`}
                       className="font-bold text-slate-900 hover:text-brand-600 line-clamp-1"
                     >
                       {event.title}
@@ -144,7 +144,7 @@ export default function DashboardPage() {
                   </Td>
                   <Td className="text-right">
                     <Link
-                      to={`/tenant/events/${event.id}`}
+                      to={`/studio/events/${event.id}`}
                       className="inline-flex items-center gap-1 text-xs font-bold text-brand-600 hover:text-brand-700"
                     >
                       <span>Manage</span>
@@ -160,7 +160,7 @@ export default function DashboardPage() {
                 title="No upcoming events"
                 description="Create your first festival or competition to begin receiving attendee registrations."
                 actionLabel="Create Event"
-                onAction={() => (window.location.href = '/tenant/events/new')}
+                onAction={() => (window.location.href = '/studio/events/new')}
               />
             </div>
           )}
@@ -171,7 +171,7 @@ export default function DashboardPage() {
           title="Recent Bookings"
           subtitle="Latest attendee orders received"
           action={
-            <Link to="/tenant/bookings" className="text-xs font-bold text-brand-600 hover:underline">
+            <Link to="/studio/bookings" className="text-xs font-bold text-brand-600 hover:underline">
               All Orders ↗
             </Link>
           }

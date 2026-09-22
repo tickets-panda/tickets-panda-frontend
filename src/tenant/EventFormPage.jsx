@@ -64,11 +64,11 @@ export default function EventFormPage() {
       if (isEdit) {
         await api.put(`/tenant/events/${id}`, payload);
         toast.success('Event updated successfully');
-        navigate(`/tenant/events/${id}`);
+        navigate(`/studio/events/${id}`);
       } else {
         const { data: created } = await api.post('/tenant/events', payload);
         toast.success('Event created! Now configure activities & ticket tiers.');
-        navigate(`/tenant/events/${created.data.event.id}`);
+        navigate(`/studio/events/${created.data.event.id}`);
       }
     } catch (error) {
       const fieldErrors = apiFieldErrors(error);

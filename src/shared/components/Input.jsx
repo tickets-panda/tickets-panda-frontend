@@ -1,4 +1,4 @@
-import { forwardRef, useState, useRef } from 'react';
+import { forwardRef, useEffect, useState, useRef } from 'react';
 import { UploadCloud, CheckCircle2, FileText, X, AlertCircle } from 'lucide-react';
 
 export function Field({ label, error, hint, required, children, htmlFor, className = '' }) {
@@ -132,13 +132,25 @@ export function FileUpload({
   required,
   error,
   value,
+  fileName,
   onChange,
   accept = '.pdf,.png,.jpg,.jpeg',
   maxSizeMb = 5,
 }) {
   const fileInputRef = useRef(null);
   const [dragActive, setDragActive] = useState(false);
-  const [localFile, setLocalFile] = useState(value ? { name: typeof value === 'string' ? value : value.name, size: value.size || null } : null);
+  const describe = (v, name) => {
+    if (!v) return null;
+    if (typeof v === 'string') return { name: name || 'Attached file', size: null };
+    return { name: v.name, size: v.size };
+  };
+  const [localFile, setLocalFile] = useState(() => describe(value, fileName));
+
+  // Keep the display in sync when the parent sets the value asynchronously
+  // (e.g. after FileReader converts the upload to a data URL).
+  useEffect(() => {
+    setLocalFile(describe(value, fileName));
+  }, [value, fileName]);
 
   const handleFiles = (files) => {
     if (!files || !files.length) return;

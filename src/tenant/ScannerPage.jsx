@@ -98,10 +98,16 @@ export default function ScannerPage() {
   const [busy, setBusy] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [scanHistory, setScanHistory] = useState([]);
+  const [selectedStaff, setSelectedStaff] = useState(null);
 
   const { data: events } = useQuery({
     queryKey: ['tenant-events', 'scanner'],
     queryFn: async () => (await api.get('/tenant/events', { params: { limit: 50 } })).data.data.rows,
+  });
+
+  const { data: staffStats } = useQuery({
+    queryKey: ['tenant-staff-stats'],
+    queryFn: async () => (await api.get('/tenant/staff-stats')).data.data,
   });
 
   const stopScanner = async () => {
@@ -271,31 +277,30 @@ export default function ScannerPage() {
       </Card>
 
       {/* CAMERA SCANNER BOX */}
-      <Card className="p-6 text-center shadow-card border-slate-200/90 overflow-hidden">
-        <div className="relative mx-auto max-w-sm overflow-hidden rounded-2xl bg-slate-950 border-2 border-slate-800 shadow-inner">
-          <div id="tp-reader" className="w-full min-h-[260px] bg-slate-950" />
+      <Card className="overflow-hidden border-slate-900/10 p-0 shadow-xl">
+        <div className="relative mx-auto overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+          <div id="tp-reader" className="w-full min-h-[320px] bg-transparent" />
 
           {!scanning && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/90 p-6 text-white">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-emerald-400 mb-3">
-                <Camera className="h-7 w-7" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 p-8 text-white backdrop-blur-sm">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30 mb-4 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                <Camera className="h-8 w-8" />
               </div>
-              <p className="font-bold text-sm">Camera Offline</p>
-              <p className="text-xs text-slate-400 mt-1 max-w-xs">
-                Activate the camera to start scanning QR code tickets continuously.
+              <p className="text-base font-black tracking-tight">Ready to Scan</p>
+              <p className="text-xs text-slate-400 mt-1.5 max-w-xs text-center leading-relaxed">
+                Position the QR code inside the frame. The scanner verifies instantly with sound feedback.
               </p>
             </div>
           )}
 
           {scanning && (
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              {/* Laser scan animation line */}
-              <div className="h-0.5 w-4/5 bg-emerald-400 shadow-[0_0_12px_#34d399] animate-pulse" />
-            </div>
+            <>
+              <div className="pointer-events-none absolute inset-6 rounded-2xl border-2 border-emerald-500/50 shadow-[0_0_40px_rgba(16,185,129,0.25)]" />
+              <div className="pointer-events-none absolute left-1/2 top-1/2 h-0.5 w-3/4 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_16px_#34d399] animate-pulse" />
+            </>
           )}
         </div>
-
-        <div className="mt-5 flex justify-center gap-3">
+        <div className="bg-white p-6 text-center flex justify-center gap-3">
           {!scanning ? (
             <Button
               onClick={startScanner}
@@ -413,6 +418,63 @@ export default function ScannerPage() {
           </Button>
         </form>
       </Card>
+
+      {/* GATE TEAM PERFORMANCE */}
+      {staffStats?.staff?.length > 0 && (
+        <Card title="Gate Team" subtitle="Tap a member to see their scan history">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {staffStats.staff.map((m) => (
+              <button
+                key={m.userId}
+                onClick={() => setSelectedStaff(selectedStaff?.userId === m.userId ? null : m)}
+                className={`flex items-center justify-between rounded-xl border p-3 text-left transition-all ${
+                  selectedStaff?.userId === m.userId ? 'border-brand-300 bg-brand-50/60' : 'border-slate-200 hover:border-slate-300 bg-white'
+                }`}
+              >
+                <div className="min-w-0">
+                  <p className="text-xs font-black text-slate-900 truncate">{m.name || m.email}</p>
+                  <p className="text-[11px] text-slate-500">
+                    {m.role?.replace(/_/g, ' ')} · {m.isActive ? 'Active' : 'Suspended'}
+                  </p>
+                  {m.lastScanAt && (
+                    <p className="text-[11px] font-mono text-slate-400">Last scan: {formatDateTime(m.lastScanAt)}</p>
+                  )}
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-lg font-black text-emerald-700">{m.admitted}</p>
+                  <p className="text-[11px] font-bold text-slate-500">
+                    {m.scans} scans · {m.failed} failed
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+          {selectedStaff && (
+            <div className="mt-4 rounded-xl border border-brand-200 bg-brand-50/40 p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-black text-slate-900">{selectedStaff.name} — Recent actions</p>
+                <button onClick={() => setSelectedStaff(null)} className="text-xs font-bold text-slate-500 hover:text-slate-800">
+                  Close
+                </button>
+              </div>
+              <div className="mt-3 space-y-2 max-h-64 overflow-y-auto">
+                {(staffStats.recentActions || [])
+                  .filter((a) => a.user?.id === selectedStaff.userId)
+                  .slice(0, 15)
+                  .map((a) => (
+                    <div key={a.id} className="flex items-center justify-between rounded-lg bg-white px-3 py-2 text-xs shadow-sm">
+                      <span className="font-bold text-slate-700">{a.action?.replace(/_/g, ' ')}</span>
+                      <span className="font-mono text-slate-400">{formatDateTime(a.createdAt)}</span>
+                    </div>
+                  ))}
+                {(staffStats.recentActions || []).filter((a) => a.user?.id === selectedStaff.userId).length === 0 && (
+                  <p className="text-xs text-slate-400">No recent actions recorded.</p>
+                )}
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* SESSION SCAN HISTORY LOG */}
       {scanHistory.length > 0 && (

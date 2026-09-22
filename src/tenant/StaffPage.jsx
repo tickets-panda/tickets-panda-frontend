@@ -67,6 +67,76 @@ export default function StaffPage() {
     return addMember.mutate({ ...form, phone: form.phone.trim() || null });
   };
 
+function AuditSection() {
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const { data } = useQuery({
+    queryKey: ['tenant-audit', page, search],
+    queryFn: async () => (await api.get('/tenant/audit-logs', { params: { page, limit: 15, search } })).data.data,
+  });
+  return (
+    <>
+      <div className="mb-3 flex gap-2">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Filter by action (e.g. TICKET_)"
+          className="w-full max-w-xs rounded-lg border border-slate-200 px-3 py-2 text-xs focus:border-brand-500 focus:outline-none"
+        />
+      </div>
+      {!data?.rows?.length ? (
+        <p className="py-6 text-center text-xs text-slate-400">No audit entries yet.</p>
+      ) : (
+        <>
+          <div className="overflow-hidden rounded-xl border border-slate-200">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <tr>
+                  <th className="px-3 py-2">Time</th>
+                  <th className="px-3 py-2">Member</th>
+                  <th className="px-3 py-2">Action</th>
+                  <th className="px-3 py-2">Entity</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {data.rows.map((r) => (
+                  <tr key={r.id} className="hover:bg-slate-50/70">
+                    <td className="whitespace-nowrap px-3 py-2 font-mono text-slate-500">{formatDateTime(r.createdAt)}</td>
+                    <td className="px-3 py-2 font-bold text-slate-900">{r.user?.name || r.user?.email || 'System'}</td>
+                    <td className="px-3 py-2">
+                      <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px]">{r.action}</span>
+                    </td>
+                    <td className="px-3 py-2 text-slate-500">{r.entityType || '—'} {r.entityId ? `#${r.entityId}` : ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="mt-3 flex items-center justify-between text-xs">
+            <span className="text-slate-500">Page {data.pagination?.page || page}</span>
+            <div className="flex gap-2">
+              <button
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className="rounded-lg border border-slate-200 px-3 py-1 disabled:opacity-40"
+              >
+                Prev
+              </button>
+              <button
+                disabled={data.pagination && page >= data.pagination.totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className="rounded-lg border border-slate-200 px-3 py-1 disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
   return (
     <RevealGroup className="space-y-6">
       <PageHeader
@@ -135,6 +205,10 @@ export default function StaffPage() {
           </Table>
         </div>
       )}
+
+      <Card title="Recent Member Actions & Audit Trail" subtitle="Who did what — pulled from the audit log">
+        <AuditSection />
+      </Card>
 
       {/* Add New Team Member Card */}
       <Card title="Add New Organizer or Gate Volunteer" subtitle="Send an invite to join your organization studio">

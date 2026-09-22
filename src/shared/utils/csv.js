@@ -1,7 +1,8 @@
 const escapeCell = (value) => {
   if (value === null || value === undefined) return '';
   const s = String(value);
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  const shown = s.startsWith('data:') ? '[file attached]' : s;
+  return /[",\n]/.test(shown) ? `"${shown.replace(/"/g, '""')}"` : shown;
 };
 
 export function rowsToCsv(columns, rows) {

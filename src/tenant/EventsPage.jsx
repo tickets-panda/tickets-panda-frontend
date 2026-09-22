@@ -50,7 +50,7 @@ export default function EventsPage() {
         description="Publish college festivals, cultural nights, tech hackathons, and departmental symposiums."
         actions={
           <Link
-            to="/tenant/events/new"
+            to="/studio/events/new"
             className="inline-flex items-center gap-2 rounded-xl bg-brand-500 hover:bg-brand-600 px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-lg shadow-brand-500/25 transition-all"
           >
             <Plus className="h-4 w-4" /> Create New Event
@@ -105,7 +105,7 @@ export default function EventsPage() {
               : 'Create your first event or annual festival to begin issuing tickets.'
           }
           actionLabel={!search && !status ? 'Create New Event' : undefined}
-          onAction={!search && !status ? () => (window.location.href = '/tenant/events/new') : undefined}
+          onAction={!search && !status ? () => (window.location.href = '/studio/events/new') : undefined}
         />
       ) : (
         <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-card">
@@ -119,7 +119,7 @@ export default function EventsPage() {
                     </div>
                     <div className="min-w-0">
                       <Link
-                        to={`/tenant/events/${event.id}`}
+                        to={`/studio/events/${event.id}`}
                         className="font-bold text-sm text-slate-900 hover:text-brand-600 transition-colors line-clamp-1"
                       >
                         {event.title}
@@ -155,16 +155,16 @@ export default function EventsPage() {
                   <div className="flex items-center justify-end gap-2">
                     {user?.tenantSlug && (
                       <Link
-                        to={`/t/${user.tenantSlug}/events/${event.slug}`}
+                        to={`/t/${user.tenantSlug}`}
                         target="_blank"
-                        title="View Public Event Page"
+                        title="View Public College Portal"
                         className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
                       >
                         <ExternalLink className="h-4 w-4" />
                       </Link>
                     )}
                     <Link
-                      to={`/tenant/events/${event.id}`}
+                      to={`/studio/events/${event.id}`}
                       className="rounded-lg bg-slate-100 hover:bg-slate-200 px-3 py-1.5 text-xs font-bold text-slate-800 transition-all"
                     >
                       Manage

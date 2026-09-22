@@ -15,18 +15,20 @@ import {
   ShieldAlert,
   Sparkles,
   Layers,
+  BarChart3,
 } from 'lucide-react';
 import api from '../shared/api/client.js';
 import { useAuthStore } from '../shared/store/auth.js';
 import Reveal from '../shared/components/Reveal.jsx';
 
 const NAV = [
-  { to: '/tenant/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/tenant/events', label: 'Events & Festivals', icon: CalendarDays },
-  { to: '/tenant/bookings', label: 'Bookings & Orders', icon: Ticket },
-  { to: '/tenant/scanner', label: 'Gate Scanner', icon: ScanLine, highlight: true },
-  { to: '/tenant/staff', label: 'Staff & Team', icon: Users },
-  { to: '/tenant/profile', label: 'College Profile', icon: UserCircle },
+  { to: '/studio/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/studio/events', label: 'Events & Festivals', icon: CalendarDays },
+  { to: '/studio/bookings', label: 'Bookings & Orders', icon: Ticket },
+  { to: '/studio/analytics', label: 'Event Analytics', icon: BarChart3 },
+  { to: '/studio/scanner', label: 'Gate Scanner', icon: ScanLine, highlight: true },
+  { to: '/studio/staff', label: 'Staff & Team', icon: Users },
+  { to: '/studio/profile', label: 'College Profile', icon: UserCircle },
 ];
 
 export default function TenantLayout() {
@@ -44,7 +46,7 @@ export default function TenantLayout() {
       // Local clean-up even if network fails
     }
     clearAuth();
-    navigate('/tenant/login');
+    navigate('/studio/login');
   };
 
   return (
@@ -57,7 +59,7 @@ export default function TenantLayout() {
       >
         {/* Brand Header */}
         <div className="flex h-16 items-center justify-between border-b border-slate-100 px-5">
-          <Link to="/tenant/dashboard" className="flex items-center gap-2.5 font-black text-slate-900">
+          <Link to="/studio/dashboard" className="flex items-center gap-2.5 font-black text-slate-900">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 text-lg shadow-sm">
               🐼
             </span>
@@ -179,7 +181,7 @@ export default function TenantLayout() {
               <Menu className="h-5 w-5" />
             </button>
             <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 font-medium">
-              <span>Tenant Studio</span>
+              <span>Studio</span>
               <ChevronRight className="h-3 w-3 text-slate-400" />
               <span className="font-bold text-slate-800 capitalize">
                 {location.pathname.split('/')[2] || 'Dashboard'}
@@ -188,12 +190,6 @@ export default function TenantLayout() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Sandbox Notice Pill */}
-            <div className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200/80 px-2.5 py-1 text-[11px] font-bold text-amber-800">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
-              <span>Sandbox Test Provider Active</span>
-            </div>
-
             {user?.tenantSlug && (
               <Link
                 to={`/t/${user.tenantSlug}`}

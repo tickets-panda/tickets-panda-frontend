@@ -44,6 +44,23 @@ export default function RegisterPage() {
   const [ticketTypeId, setTicketTypeId] = useState(ticketTypeParam ? Number(ticketTypeParam) : null);
   const [quantity, setQuantity] = useState(1);
   const [customValues, setCustomValues] = useState({});
+  const [fileNames, setFileNames] = useState({});
+
+  // Convert an uploaded File to a base64 data URL the API can store.
+  const handleFileSelect = (fieldId, file) => {
+    if (!file) {
+      setCustomValues((prev) => ({ ...prev, [fieldId]: '' }));
+      setFileNames((prev) => ({ ...prev, [fieldId]: '' }));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCustomValues((prev) => ({ ...prev, [fieldId]: String(reader.result || '') }));
+      setFileNames((prev) => ({ ...prev, [fieldId]: file.name }));
+    };
+    reader.onerror = () => toast.error('Could not read that file');
+    reader.readAsDataURL(file);
+  };
   const [submitting, setSubmitting] = useState(false);
 
   const { register, handleSubmit, getValues, formState, trigger } = useForm({
@@ -573,11 +590,11 @@ export default function RegisterPage() {
                     key={f.id}
                     label={f.fieldLabel}
                     required={f.isRequired}
-                    hint={f.helpText || 'PDF, PNG, JPG up to 5 MB'}
+                    hint={f.helpText || 'PDF, PNG, JPG up to 2 MB'}
+                    maxSizeMb={2}
                     value={customValues[fieldId]}
-                    onChange={(file) => {
-                      setCustomValues((prev) => ({ ...prev, [fieldId]: file }));
-                    }}
+                    fileName={fileNames[fieldId]}
+                    onChange={(file) => handleFileSelect(fieldId, file)}
                   />
                 );
               })}
@@ -676,7 +693,12 @@ export default function RegisterPage() {
                   {formFields.map((f) => {
                     const val = customValues[f.id];
                     if (!val) return null;
-                    const displayVal = typeof val === 'object' ? val.name || 'File Attached' : String(val);
+                    const displayVal =
+                      typeof val === 'string' && val.startsWith('data:')
+                        ? fileNames[f.id] || 'File Attached'
+                        : typeof val === 'object'
+                          ? val.name || 'File Attached'
+                          : String(val);
                     return (
                       <div key={f.id} className="flex justify-between text-xs">
                         <span className="text-zinc-500">{f.fieldLabel}:</span>
