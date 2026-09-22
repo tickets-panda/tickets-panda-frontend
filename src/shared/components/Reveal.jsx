@@ -35,10 +35,14 @@ export default function Reveal({
           }
         });
       },
-      { threshold: 0.12, rootMargin: '0px 0px -6% 0px' },
+      { threshold: 0.08, rootMargin: '0px 0px -4% 0px' },
     );
     io.observe(el);
-    return () => io.disconnect();
+    const fallback = setTimeout(() => setVisible(true), 900);
+    return () => {
+      clearTimeout(fallback);
+      io.disconnect();
+    };
   }, []);
 
   const { style, ...passthrough } = rest;

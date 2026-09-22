@@ -163,14 +163,25 @@ export default function NehruHome() {
             <img src="/ngk/ngk-2026-logo.png" alt="NGK 2026" className="mx-auto h-28 w-auto sm:h-36" />
           </Reveal>
           <Reveal delay={100}>
-            <p className="ngk-kicker mt-6">Nehru Grand Kacheri · NASC & NIET</p>
-            <h1 className="ngk-title mx-auto mt-4 max-w-4xl text-5xl sm:text-7xl">
-              Nehru Grand <em>Kacheri 2026</em>
+            <p className="ngk-kicker mt-6">Nehru Grand Kacheri · NASC & NIET · Coimbatore</p>
+            <h1 className="ngk-title mx-auto mt-4 max-w-4xl">
+              Nehru Grand <span className="gold-grad">Kacheri 2026</span>
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-sm text-white/75 sm:text-base">
-              4 days · 35 competitions · Cultural, Fine Arts, Technical, Management & Fun Events —
-              with verified e-tickets and QR gate entry.
+            <p className="ngk-hero-sub mx-auto mt-4 max-w-2xl">
+              A 4-day inter-collegiate festival — <strong className="text-white">35 competitions</strong> across Cultural, Fine Arts,
+              Technical, Management & Fun Events. Verified payments, QR e-tickets & instant gate entry.
             </p>
+            <div className="mx-auto mt-5 flex max-w-2xl flex-wrap items-center justify-center gap-2 text-[11px] font-bold tracking-wide text-white/70">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 backdrop-blur">
+                <ShieldCheck className="h-3.5 w-3.5 text-[#f4b73c]" /> Verified Payments
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 backdrop-blur">
+                <Ticket className="h-3.5 w-3.5 text-[#f4b73c]" /> Instant QR Pass
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 backdrop-blur">
+                <Clock className="h-3.5 w-3.5 text-[#f4b73c]" /> 13–16 Oct 2026
+              </span>
+            </div>
           </Reveal>
           <Reveal delay={180}>
             <div className="mt-6 flex items-center justify-center gap-2 sm:gap-3" aria-live="polite">
@@ -204,19 +215,27 @@ export default function NehruHome() {
       </section>
 
       {/* DAYS */}
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-        <Reveal className="text-center">
-          <p className="ngk-section-kicker">Festival Days</p>
-          <h2 className="ngk-section-title mt-1 text-4xl sm:text-5xl">Four days, one grand stage</h2>
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <Reveal className="mx-auto max-w-3xl text-center">
+          <p className="ngk-section-kicker justify-center">Festival Days</p>
+          <h2 className="ngk-section-title mt-2">Four days, one grand stage</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-zinc-500">
+            Each day has its own theme — pick the day you want to compete on, or explore all 35 events together.
+          </p>
         </Reveal>
         <RevealGroup className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {DAYS.map((d) => (
-            <div key={d.day} className="ngk-day-card">
-              <img src={d.img} alt={d.title} className="h-40 w-full object-cover" loading="lazy" />
+              <div key={d.day} className="ngk-day-card group">
+              <div className="relative overflow-hidden">
+                <img src={d.img} alt={d.title} className="h-44 w-full object-cover transition duration-500 group-hover:scale-[1.03]" loading="lazy" />
+                <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-black tracking-widest text-[#0b6b4f] shadow">
+                  {d.day}
+                </span>
+              </div>
               <div className="p-5">
-                <p className="text-[11px] font-black tracking-widest text-[#0b6b4f]">{d.day} · {d.date}</p>
-                <h3 className="font-display-ngk mt-1 text-2xl font-bold text-[#032b22]">{d.title}</h3>
-                <p className="mt-1 text-xs text-zinc-500">{d.blurb}</p>
+                <p className="text-[11px] font-bold tracking-widest text-zinc-400">{d.date}</p>
+                <h3 className="font-display-ngk mt-1 text-[1.7rem] font-extrabold leading-none tracking-tight text-[#032b22]">{d.title}</h3>
+                <p className="mt-2 text-[13px] leading-relaxed text-zinc-500">{d.blurb}</p>
                 {d.open ? (
                   <button
                     className="ngk-btn-gold mt-4 w-full justify-center !py-2.5 text-xs"

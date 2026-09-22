@@ -17,10 +17,26 @@
   font-family: 'Cormorant Garamond', Georgia, serif;
 }
 
-/* Hero */
+/* Hero — premium emerald with gold accent + subtle grid */
 .ngk-hero {
-  background: linear-gradient(135deg, #064e3b 0%, #0b6b4f 55%, #032b22 100%);
+  position: relative;
+  background:
+    radial-gradient(900px 500px at 70% -10%, rgba(244,183,60,0.18), transparent 60%),
+    radial-gradient(700px 400px at 10% 0%, rgba(16,185,129,0.18), transparent 65%),
+    linear-gradient(135deg, #032b22 0%, #064e3b 45%, #0b6b4f 100%);
   border-bottom: 2px solid #f4b73c;
+  overflow: hidden;
+}
+.ngk-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 60%, transparent 100%);
+  pointer-events: none;
 }
 .ngk-kicker {
   display: inline-flex;
@@ -38,12 +54,26 @@
 }
 .ngk-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 700;
+  font-weight: 800;
   color: #fff;
-  line-height: 1.02;
-  letter-spacing: -0.02em;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
   text-wrap: balance;
-  font-size: clamp(2.75rem, 7vw, 5.25rem);
+  font-size: clamp(3rem, 7.5vw, 5.8rem);
+  text-shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
+.ngk-title .gold-grad {
+  background: linear-gradient(180deg, #fff8dd 0%, #f4b73c 55%, #e5a420 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.ngk-hero-sub {
+  font-size: clamp(0.85rem, 1.8vw, 1.05rem);
+  line-height: 1.65;
+  letter-spacing: -0.01em;
+  color: rgba(255,255,255,0.78);
+  text-wrap: pretty;
 }
 .ngk-title em {
   font-style: normal;
@@ -52,19 +82,20 @@
 .ngk-btn-gold {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(180deg, #f4b73c, #e5a420);
-  color: #3a2800;
-  font-weight: 800;
-  border-radius: 0.9rem;
-  padding: 0.8rem 1.6rem;
-  font-size: 0.9rem;
-  box-shadow: 0 10px 26px rgba(244, 183, 60, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  gap: 0.6rem;
+  background: linear-gradient(180deg, #ffe8a6 0%, #f4b73c 55%, #e5a420 100%);
+  color: #2b1d00;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  border-radius: 1rem;
+  padding: 0.9rem 1.7rem;
+  font-size: 0.92rem;
+  box-shadow: 0 14px 30px rgba(244,183,60,0.38), inset 0 1px 0 rgba(255,255,255,0.6);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
 }
 .ngk-btn-gold:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 32px rgba(244, 183, 60, 0.45);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px rgba(244,183,60,0.5), inset 0 1px 0 rgba(255,255,255,0.7);
 }
 .ngk-btn-ghost {
   display: inline-flex;
@@ -84,14 +115,16 @@
   background: rgba(255, 255, 255, 0.16);
 }
 
-/* Countdown */
+/* Countdown — glass */
 .ngk-count-box {
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(244, 183, 60, 0.35);
-  border-radius: 1rem;
-  min-width: 4.5rem;
-  padding: 0.6rem 0.4rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(244,183,60,0.32);
+  backdrop-filter: blur(8px);
+  border-radius: 1.1rem;
+  min-width: 5rem;
+  padding: 0.7rem 0.5rem;
   text-align: center;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.22);
 }
 .ngk-count-box strong {
   display: block;
@@ -198,21 +231,33 @@
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
 }
 
-/* Section titles */
+/* Section titles — modern, tight, confident */
 .ngk-section-kicker {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #0b6b4f;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ngk-section-kicker::before {
+  content: '';
+  width: 22px;
+  height: 2px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #f4b73c, #0b6b4f);
+  display: inline-block;
 }
 .ngk-section-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 700;
+  font-weight: 800;
   color: #032b22;
-  line-height: 1.05;
-  letter-spacing: -0.015em;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
   text-wrap: balance;
+  font-size: clamp(1.9rem, 4.5vw, 3.2rem);
 }
 .ngk p {
   text-wrap: pretty;
