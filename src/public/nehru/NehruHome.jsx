@@ -244,12 +244,9 @@ export default function NehruHome() {
                     Register Now · ₹250 <ArrowRight className="h-3.5 w-3.5" />
                   </button>
                 ) : (
-                  <button
-                    className="ngk-btn-gold mt-4 w-full justify-center !py-2.5 text-xs"
-                    onClick={() => pickDay(d.day)}
-                  >
-                    View {d.title} Events <ArrowRight className="h-3.5 w-3.5" />
-                  </button>
+                  <p className="mt-4 rounded-xl bg-zinc-100 py-2.5 text-center text-xs font-bold text-zinc-400">
+                    Schedule unlocking soon
+                  </p>
                 )}
               </div>
             </div>
