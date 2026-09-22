@@ -20,10 +20,10 @@ export default function Stat({
     <div className={`card p-5 hover:shadow-card-hover transition-all ${className}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-bold uppercase tracking-wider text-zinc-500">{label}</p>
-          <p className="mt-1.5 text-2xl font-black tracking-tight text-zinc-950 truncate">{value}</p>
+          <p className="text-[11px] font-bold uppercase tracking-wider leading-snug text-zinc-500 line-clamp-2">{label}</p>
+          <p className="mt-1.5 text-2xl font-black tracking-tight text-zinc-950 break-words">{value}</p>
           {(hint || trend) && (
-            <div className="mt-2 flex items-center gap-2 text-xs">
+            <div className="mt-2 flex flex-wrap items-start gap-x-2 gap-y-1 text-xs leading-relaxed">
               {trend && (
                 <span
                   className={`font-semibold ${
@@ -37,7 +37,7 @@ export default function Stat({
                   {trend}
                 </span>
               )}
-              {hint && <span className="text-zinc-400 truncate">{hint}</span>}
+              {hint && <span className="min-w-0 flex-1 text-zinc-400 line-clamp-2 leading-snug">{hint}</span>}
             </div>
           )}
         </div>
