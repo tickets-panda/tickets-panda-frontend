@@ -12,7 +12,7 @@ export default function RequireAuth({ area, children }) {
 
   if (!bootstrapped) return <PageLoader label="Restoring session…" />;
 
-  const loginPath = area === 'platform' ? '/platform/login' : '/studio/login';
+  const loginPath = area === 'platform' ? '/platform/login' : '/organizer/login';
 
   if (!accessToken || !user) {
     return <Navigate to={loginPath} state={{ from: location.pathname }} replace />;
@@ -20,7 +20,7 @@ export default function RequireAuth({ area, children }) {
 
   const allowed = area === 'platform' ? isPlatformUser(user) : isTenantUser(user);
   if (!allowed) {
-    return <Navigate to={isPlatformUser(user) ? '/platform/dashboard' : '/studio/dashboard'} replace />;
+    return <Navigate to={isPlatformUser(user) ? '/platform/dashboard' : '/organizer/dashboard'} replace />;
   }
 
   return children;

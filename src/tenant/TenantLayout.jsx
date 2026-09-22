@@ -22,13 +22,13 @@ import { useAuthStore } from '../shared/store/auth.js';
 import Reveal from '../shared/components/Reveal.jsx';
 
 const NAV = [
-  { to: '/studio/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/studio/events', label: 'Events & Festivals', icon: CalendarDays },
-  { to: '/studio/bookings', label: 'Bookings & Orders', icon: Ticket },
-  { to: '/studio/analytics', label: 'Event Analytics', icon: BarChart3 },
-  { to: '/studio/scanner', label: 'Gate Scanner', icon: ScanLine, highlight: true },
-  { to: '/studio/staff', label: 'Staff & Team', icon: Users },
-  { to: '/studio/profile', label: 'College Profile', icon: UserCircle },
+  { to: '/organizer/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/organizer/events', label: 'Events & Festivals', icon: CalendarDays },
+  { to: '/organizer/bookings', label: 'Bookings & Orders', icon: Ticket },
+  { to: '/organizer/analytics', label: 'Event Analytics', icon: BarChart3 },
+  { to: '/organizer/scanner', label: 'Gate Scanner', icon: ScanLine, highlight: true },
+  { to: '/organizer/staff', label: 'Staff & Team', icon: Users },
+  { to: '/organizer/profile', label: 'College Profile', icon: UserCircle },
 ];
 
 export default function TenantLayout() {
@@ -46,7 +46,7 @@ export default function TenantLayout() {
       // Local clean-up even if network fails
     }
     clearAuth();
-    navigate('/studio/login');
+    navigate('/organizer/login');
   };
 
   return (
@@ -59,14 +59,14 @@ export default function TenantLayout() {
       >
         {/* Brand Header */}
         <div className="flex h-16 items-center justify-between border-b border-slate-100 px-5">
-          <Link to="/studio/dashboard" className="flex items-center gap-2.5 font-black text-slate-900">
+          <Link to="/organizer/dashboard" className="flex items-center gap-2.5 font-black text-slate-900">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 text-lg shadow-sm">
               🐼
             </span>
             <div>
               <span className="text-base tracking-tight font-black text-slate-950">Ticket Panda</span>
               <span className="block text-[10px] font-bold uppercase tracking-widest text-brand-600">
-                Organizer Studio
+                Organizer Portal
               </span>
             </div>
           </Link>
@@ -181,7 +181,7 @@ export default function TenantLayout() {
               <Menu className="h-5 w-5" />
             </button>
             <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 font-medium">
-              <span>Studio</span>
+              <span>Organizer</span>
               <ChevronRight className="h-3 w-3 text-slate-400" />
               <span className="font-bold text-slate-800 capitalize">
                 {location.pathname.split('/')[2] || 'Dashboard'}

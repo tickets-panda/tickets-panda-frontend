@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { LogIn, Key, Mail, ShieldAlert } from 'lucide-react';
+import { LogIn, Key, Mail, ShieldAlert, Sparkles, Building2, ShieldCheck } from 'lucide-react';
 import api, { apiErrorMessage } from '../shared/api/client.js';
 import { useAuthStore, isPlatformUser } from '../shared/store/auth.js';
 import Input from '../shared/components/Input.jsx';
@@ -10,11 +10,17 @@ import Button from '../shared/components/Button.jsx';
 import { RevealGroup } from '../shared/components/Reveal.jsx';
 
 export default function LoginPage() {
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, setValue, formState } = useForm({
     defaultValues: { email: '', password: '' },
   });
   const setAuth = useAuthStore((state) => state.setAuth);
   const navigate = useNavigate();
+
+  const fillDemo = (email, password) => {
+    setValue('email', email);
+    setValue('password', password);
+    toast.success(`Loaded ${email}`);
+  };
   const location = useLocation();
 
   const onSubmit = async (values) => {
@@ -26,7 +32,7 @@ export default function LoginPage() {
 
       const target = isPlatformUser(user)
         ? '/platform/dashboard'
-        : location.state?.from || '/studio/dashboard';
+        : location.state?.from || '/organizer/dashboard';
       navigate(target, { replace: true });
     } catch (error) {
       toast.error(apiErrorMessage(error));
@@ -44,7 +50,7 @@ export default function LoginPage() {
           <span className="text-2xl font-black tracking-tight text-slate-950">Ticket Panda</span>
         </Link>
         <h2 className="mt-4 text-2xl font-black tracking-tight text-slate-900">
-          Organizer & Staff Studio
+          Organizer Portal
         </h2>
         <p className="mt-1 text-xs text-slate-500">
           Sign in to manage your college festivals, competitions, and gate admissions.
@@ -80,7 +86,7 @@ export default function LoginPage() {
               <Link to="/forgot-password" className="font-semibold text-brand-600 hover:underline">
                 Forgot password?
               </Link>
-              <Link to="/studio/register" className="font-semibold text-slate-700 hover:text-slate-900">
+              <Link to="/organizer/register" className="font-semibold text-slate-700 hover:text-slate-900">
                 Register New College
               </Link>
             </div>
@@ -92,9 +98,46 @@ export default function LoginPage() {
               size="lg"
               leftIcon={LogIn}
             >
-              Sign In to Studio
+              Sign In to Organizer
             </Button>
           </form>
+
+          <div className="mt-6 border-t border-slate-100 pt-5">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2.5 flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+              <span>Demo — Nehru College (for testing)</span>
+            </p>
+            <div className="grid gap-2">
+              <button
+                type="button"
+                onClick={() => fillDemo('admin@nehru-college.edu', 'Password123')}
+                className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-left text-xs hover:bg-brand-50/50 hover:border-brand-200 transition-all"
+              >
+                <div>
+                  <p className="font-bold text-slate-800 flex items-center gap-1.5">
+                    <Building2 className="h-3.5 w-3.5 text-brand-600" />
+                    <span>Nehru College — Organizer</span>
+                  </p>
+                  <p className="text-[11px] text-slate-500 font-mono">admin@nehru-college.edu · Password123</p>
+                </div>
+                <span className="text-[10px] font-bold text-brand-600">Fill</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => fillDemo('admin@ticketpanda.io', 'Password123')}
+                className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2.5 text-left text-xs hover:bg-purple-50/50 hover:border-purple-200 transition-all"
+              >
+                <div>
+                  <p className="font-bold text-slate-800 flex items-center gap-1.5">
+                    <ShieldCheck className="h-3.5 w-3.5 text-purple-600" />
+                    <span>Platform Admin</span>
+                  </p>
+                  <p className="text-[11px] text-slate-500 font-mono">admin@ticketpanda.io · Password123</p>
+                </div>
+                <span className="text-[10px] font-bold text-purple-600">Fill</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <p className="mt-6 text-center text-xs text-slate-500">

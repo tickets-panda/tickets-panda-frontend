@@ -25,7 +25,7 @@ export default function RegisterPage() {
     try {
       const { data } = await api.post('/auth/register/tenant', values);
       toast.success(`Organization created! Your public portal will be /t/${data.data.slug}`);
-      navigate('/studio/login');
+      navigate('/organizer/login');
     } catch (error) {
       const fieldErrors = apiFieldErrors(error);
       Object.entries(fieldErrors).forEach(([field, message]) => setError(field, { message }));
@@ -132,7 +132,7 @@ export default function RegisterPage() {
           <div className="mt-6 border-t border-slate-100 pt-4 text-center">
             <p className="text-xs text-slate-500">
               Already have an organizer account?{' '}
-              <Link to="/studio/login" className="font-bold text-brand-600 hover:underline">
+              <Link to="/organizer/login" className="font-bold text-brand-600 hover:underline">
                 Sign in to Studio
               </Link>
             </p>

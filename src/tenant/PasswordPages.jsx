@@ -61,7 +61,7 @@ export function ForgotPasswordPage() {
 
           <div className="mt-6 border-t border-slate-100 pt-4 text-center">
             <Link
-              to="/studio/login"
+              to="/organizer/login"
               className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900"
             >
               <ArrowLeft className="h-3.5 w-3.5" /> Back to Sign In
@@ -87,7 +87,7 @@ export function ResetPasswordPage() {
         newPassword: values.newPassword,
       });
       toast.success(data.message || 'Password updated successfully!');
-      navigate('/studio/login');
+      navigate('/organizer/login');
     } catch (error) {
       toast.error(apiErrorMessage(error));
     }
@@ -147,7 +147,7 @@ export function ResetPasswordPage() {
 
           <div className="mt-6 border-t border-slate-100 pt-4 text-center">
             <Link
-              to="/studio/login"
+              to="/organizer/login"
               className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900"
             >
               <ArrowLeft className="h-3.5 w-3.5" /> Back to Sign In

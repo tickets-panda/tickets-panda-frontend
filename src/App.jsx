@@ -99,10 +99,10 @@ function NotFound() {
   );
 }
 
-/** Legacy redirect: /tenant/* → /studio/* so old links keep working. */
+/** Legacy redirects: /tenant/* and /studio/* → /organizer/* so old links keep working. */
 function LegacyTenantRedirect() {
   const location = useLocation();
-  const to = location.pathname.replace(/^\/tenant/, '/studio') + location.search + location.hash;
+  const to = location.pathname.replace(/^\/(tenant|studio)/, '/organizer') + location.search + location.hash;
   return <Navigate to={to} replace />;
 }
 
@@ -141,22 +141,22 @@ export default function App() {
       </Route>
 
       {/* Auth */}
-      <Route path="/studio/login" element={<LoginPage />} />
+      <Route path="/organizer/login" element={<LoginPage />} />
       <Route path="/platform/login" element={<LoginPage />} />
-      <Route path="/studio/register" element={<TenantRegisterPage />} />
+      <Route path="/organizer/register" element={<TenantRegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* Tenant dashboard */}
       <Route
-        path="/studio"
+        path="/organizer"
         element={
           <RequireAuth area="tenant">
             <TenantLayout />
           </RequireAuth>
         }
       >
-        <Route index element={<Navigate to="/studio/dashboard" replace />} />
+        <Route index element={<Navigate to="/organizer/dashboard" replace />} />
         <Route path="dashboard" element={<TenantDashboard />} />
         <Route path="events" element={<EventsPage />} />
         <Route path="events/new" element={<EventFormPage />} />
@@ -170,8 +170,9 @@ export default function App() {
         <Route path="profile" element={<ProfilePage />} />
       </Route>
 
-      {/* Legacy: unknown /tenant/* paths redirect to their /studio/* equivalent */}
+      {/* Legacy: old /tenant/* and /studio/* paths redirect */}
       <Route path="/tenant/*" element={<LegacyTenantRedirect />} />
+      <Route path="/studio/*" element={<LegacyTenantRedirect />} />
 
       {/* Platform admin */}
       <Route

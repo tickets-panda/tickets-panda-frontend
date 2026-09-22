@@ -36,7 +36,7 @@ export default function PlatformLayout() {
       // Local clean-up
     }
     clearAuth();
-    navigate('/studio/login');
+    navigate('/organizer/login');
   };
 
   return (
@@ -130,7 +130,7 @@ export default function PlatformLayout() {
 
           <div className="flex items-center gap-3">
             <Link
-              to="/studio/dashboard"
+              to="/organizer/dashboard"
               className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-sm"
             >
               <span>Studio</span>
