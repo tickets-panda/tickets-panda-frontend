@@ -111,7 +111,7 @@ export default function DashboardPage() {
       </RevealGroup>
 
       {/* Operational Overview Grid */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-5 lg:grid-cols-2 items-start">
         {/* Upcoming Events Card */}
         <Card
           title="Upcoming Festivals & Events"
@@ -124,12 +124,12 @@ export default function DashboardPage() {
           bodyClassName="p-0"
         >
           {data.upcomingEvents?.length ? (
-            <Table columns={['Event & Venue', 'Date', 'Status', '']}>
+            <Table columns={['Event & Venue', 'Date', { label: 'Status', className: 'text-right' }]}>
               {data.upcomingEvents.map((event) => (
                 <tr key={event.id} className="hover:bg-slate-50/80 transition-colors">
                   <Td>
                     <Link
-                      to={`/studio/events/${event.id}`}
+                      to={`/organizer/events/${event.id}`}
                       className="font-bold text-slate-900 hover:text-brand-600 line-clamp-1"
                     >
                       {event.title}
@@ -139,17 +139,17 @@ export default function DashboardPage() {
                   <Td className="whitespace-nowrap text-xs text-slate-600">
                     {formatDate(event.eventDate)}
                   </Td>
-                  <Td>
-                    <StatusBadge status={event.status} size="xs" />
-                  </Td>
-                  <Td className="text-right">
-                    <Link
-                      to={`/studio/events/${event.id}`}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-brand-600 hover:text-brand-700"
-                    >
-                      <span>Manage</span>
-                      <ArrowRight className="h-3 w-3" />
-                    </Link>
+                  <Td align="right">
+                    <div className="flex items-center justify-end gap-4">
+                      <StatusBadge status={event.status} size="xs" />
+                      <Link
+                        to={`/organizer/events/${event.id}`}
+                        className="inline-flex items-center gap-1 text-xs font-bold text-brand-600 hover:text-brand-700"
+                      >
+                        <span>Manage</span>
+                        <ArrowRight className="h-3 w-3" />
+                      </Link>
+                    </div>
                   </Td>
                 </tr>
               ))}
@@ -178,7 +178,7 @@ export default function DashboardPage() {
           bodyClassName="p-0"
         >
           {data.recentRegistrations?.length ? (
-            <Table columns={['Attendee', 'Event / Tier', 'Status']}>
+            <Table columns={['Attendee', 'Event / Tier', { label: 'Status', className: 'text-right' }]}>
               {data.recentRegistrations.map((registration) => (
                 <tr key={registration.id} className="hover:bg-slate-50/80 transition-colors">
                   <Td>
@@ -202,7 +202,7 @@ export default function DashboardPage() {
                       {registration.ticketType?.name || 'General Admission'}
                     </p>
                   </Td>
-                  <Td>
+                  <Td align="right">
                     <StatusBadge status={registration.status} size="xs" />
                   </Td>
                 </tr>
