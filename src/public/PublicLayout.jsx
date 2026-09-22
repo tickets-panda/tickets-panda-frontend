@@ -72,14 +72,14 @@ export default function PublicLayout() {
             </Link>
 
             <Link
-              to="/studio/login"
+              to="/organizer/login"
               className="inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold text-zinc-700 hover:bg-zinc-100 transition"
             >
               Sign In
             </Link>
 
             <Link
-              to="/studio/register"
+              to="/organizer/register"
               className="inline-flex items-center gap-1.5 rounded-xl bg-brand-500 px-4 py-2 text-xs font-bold text-white shadow-sm shadow-brand-500/20 hover:bg-brand-600 active:scale-95 transition"
             >
               <span>Create an Event</span>
@@ -125,14 +125,14 @@ export default function PublicLayout() {
                 <span>My Tickets</span>
               </Link>
               <Link
-                to="/studio/login"
+                to="/organizer/login"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center justify-center gap-2 rounded-xl border border-zinc-200 px-4 py-2.5 text-xs font-bold text-zinc-800"
               >
                 Organizer Sign In
               </Link>
               <Link
-                to="/studio/register"
+                to="/organizer/register"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-xs font-bold text-white"
               >
@@ -187,7 +187,7 @@ export default function PublicLayout() {
                   <li><Link to="/features" className="hover:text-brand-600">Features & Platform</Link></li>
                   <li><Link to="/how-it-works" className="hover:text-brand-600">How it Works</Link></li>
                   <li><Link to="/events" className="hover:text-brand-600">Browse Public Events</Link></li>
-                  <li><Link to="/studio/scanner" className="hover:text-brand-600">QR Gate Scanner</Link></li>
+                  <li><Link to="/organizer/scanner" className="hover:text-brand-600">QR Gate Scanner</Link></li>
                   <li><Link to="/my-tickets" className="hover:text-brand-600">My Tickets Portal</Link></li>
                 </ul>
               </div>
@@ -199,7 +199,7 @@ export default function PublicLayout() {
                   <li><Link to="/for-colleges" className="hover:text-brand-600">For College Fests</Link></li>
                   <li><Link to="/for-organizers" className="hover:text-brand-600">For Conferences</Link></li>
                   <li><Link to="/for-organizers" className="hover:text-brand-600">Hackathons & Workshops</Link></li>
-                  <li><Link to="/studio/register" className="hover:text-brand-600">Start as Organizer</Link></li>
+                  <li><Link to="/organizer/register" className="hover:text-brand-600">Start as Organizer</Link></li>
                 </ul>
               </div>
 
