@@ -12,7 +12,7 @@ export default function Table({
             {columns.map((column) => (
               <th
                 key={column.key || column}
-                className={`px-4 py-3 font-semibold ${column.className || ''}`}
+                className={`px-4 first:pl-6 last:pr-6 py-3 font-semibold ${column.className || ''}`}
               >
                 {column.label ?? column}
               </th>
@@ -34,7 +34,7 @@ export default function Table({
 export function Td({ children, className = '', align = 'left' }) {
   return (
     <td
-      className={`px-4 py-3.5 text-xs text-zinc-700 font-medium align-middle ${
+      className={`px-4 first:pl-6 last:pr-6 py-3.5 text-xs text-zinc-700 font-medium align-middle ${
         align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'
       } ${className}`}
     >

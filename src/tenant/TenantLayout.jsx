@@ -53,12 +53,12 @@ export default function TenantLayout() {
     <div className="min-h-screen bg-slate-50 lg:flex">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 transform border-r border-slate-200 bg-white shadow-lg transition-transform lg:static lg:translate-x-0 lg:shadow-none ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-slate-200 bg-white shadow-lg transition-transform lg:sticky lg:top-0 lg:h-screen lg:shrink-0 lg:translate-x-0 lg:shadow-none ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Brand Header */}
-        <div className="flex h-16 items-center justify-between border-b border-slate-100 px-5">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-100 px-5">
           <Link to="/organizer/dashboard" className="flex items-center gap-2.5 font-black text-slate-900">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 text-lg shadow-sm">
               🐼
@@ -80,7 +80,7 @@ export default function TenantLayout() {
         </div>
 
         {/* Tenant Organization Profile Strip */}
-        <div className="border-b border-slate-100 bg-slate-50/70 px-4 py-3.5">
+        <div className="shrink-0 border-b border-slate-100 bg-slate-50/70 px-4 py-3.5">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-200 text-xs font-black text-brand-600 shadow-sm">
               {user?.tenantName?.charAt(0) || 'C'}
@@ -102,7 +102,7 @@ export default function TenantLayout() {
         </div>
 
         {/* Main Navigation Links */}
-        <nav className="space-y-1 p-3">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
           {NAV.map(({ to, label, icon: Icon, highlight }) => (
             <NavLink
               key={to}
@@ -139,7 +139,7 @@ export default function TenantLayout() {
         </nav>
 
         {/* Bottom User Profile & Sign Out */}
-        <div className="absolute bottom-0 left-0 right-0 border-t border-slate-100 bg-white p-3">
+        <div className="shrink-0 border-t border-slate-100 bg-white p-3">
           <div className="mb-2 flex items-center gap-2.5 rounded-xl bg-slate-50 p-2.5 border border-slate-100">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-200 text-xs font-bold text-slate-700">
               {user?.name?.charAt(0) || 'U'}

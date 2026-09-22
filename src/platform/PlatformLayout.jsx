@@ -43,11 +43,11 @@ export default function PlatformLayout() {
     <div className="min-h-screen bg-slate-100/70 lg:flex">
       {/* Platform Admin Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 transform border-r border-slate-800 bg-slate-950 text-slate-300 transition-transform lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-slate-800 bg-slate-950 text-slate-300 transition-transform lg:sticky lg:top-0 lg:h-screen lg:shrink-0 lg:translate-x-0 ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex h-16 items-center justify-between border-b border-slate-850 px-5">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-850 px-5">
           <Link to="/platform/dashboard" className="flex items-center gap-2.5 font-black text-white">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-600 text-lg shadow-sm shadow-purple-600/30">
               🐼
@@ -65,7 +65,7 @@ export default function PlatformLayout() {
         </div>
 
         {/* Security / Role Strip */}
-        <div className="border-b border-slate-850 bg-slate-900/50 px-4 py-3">
+        <div className="shrink-0 border-b border-slate-850 bg-slate-900/50 px-4 py-3">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 px-2.5 py-0.5 text-[10px] font-bold text-purple-300">
             <ShieldCheck className="h-3.5 w-3.5 text-purple-400" />
             <span>Super Administrator</span>
@@ -73,7 +73,7 @@ export default function PlatformLayout() {
         </div>
 
         {/* Navigation */}
-        <nav className="space-y-1 p-3">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
           {NAV.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
@@ -93,7 +93,7 @@ export default function PlatformLayout() {
         </nav>
 
         {/* Footer User / Logout */}
-        <div className="absolute bottom-0 left-0 right-0 border-t border-slate-850 bg-slate-950 p-3">
+        <div className="shrink-0 border-t border-slate-850 bg-slate-950 p-3">
           <div className="mb-2 rounded-xl bg-slate-900 p-2.5">
             <p className="truncate text-xs font-bold text-white">{user?.name || 'Platform Admin'}</p>
             <p className="truncate font-mono text-[10px] text-slate-400">{user?.email}</p>
